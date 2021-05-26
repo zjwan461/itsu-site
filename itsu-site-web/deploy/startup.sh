@@ -1,0 +1,1 @@
+setsid java -Dfile.encoding=UTF-8 -Xms512m -Xmx512m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+PrintClassHistogram -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xloggc:`pwd`/logs/gc.log -jar kol-admin-api-1.0.jar  --spring.profiles.active=prd >> /dev/null 2>&1 &

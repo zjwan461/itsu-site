@@ -1,0 +1,70 @@
+spring:
+  servlet:
+    multipart:
+      max-request-size: 65MB
+      max-file-size: 5MB
+  freemarker:
+    enabled: false #不开启springmvc视图解析
+    charset: UTF-8
+    cache: false
+    settings:
+      locale: zh_CN #设置地区
+      classic_compatible: true #设置可以为null
+      number_format: 0.##  #设置保留2位小数
+      date_format: yyyy-MM-dd #设置日期时间格式
+      whitespace_stripping: true #设置去除多余的空格
+      datetime_format: yyyy-MM-dd hh:mm:ss #设置日期格式化
+      time_format: hh:mm:ss #设置时间格式化
+  resources:
+    add-mappings: false
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+  mvc:
+    throw-exception-if-no-handler-found: true
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active:
+      - dev
+server:
+  port: 1226
+  servlet:
+    session:
+      timeout: PT8H
+    context-path: /site-demo
+    encoding:
+      charset: UTF-8
+      force: true
+mybatis-plus:
+  mapper-locations:
+    - classpath:mappers/*.xml
+  configuration:
+    cache-enabled: true
+    map-underscore-to-camel-case: true
+itsu:
+  site:
+    env: ${spring.profiles.active}
+    global-param-check:
+      enable: true
+      reg-exs:
+        - .*[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\]+.*
+    security-config:
+      login-url: /login
+      logout-url: /
+      hash-algorithm-name: MD5
+      hash-iterations: 10
+      authentication-cache-name: ${itsu.site.name}-authen
+      authorization-cache-name: ${itsu.site.name}-author
+      cache-expire: 3600
+    login-aes-encrypt: true
+    name: site-demo
+    aes-key: 100534895465610L
+    mask:
+      log: true
+      resp: false
+    access-token:
+      dynamic: true
+      type: REDIS
+      expire: 8h

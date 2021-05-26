@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.itsu.site.framework.config.ItsuSiteAutoConfiguration,\
+com.itsu.site.framework.config.MybatisPlusConfiguration,\
+com.itsu.site.framework.config.RedisConfiguration,\
+com.itsu.site.framework.config.ShiroConfiguration,\
+com.itsu.site.framework.config.WebMvcConfiguration

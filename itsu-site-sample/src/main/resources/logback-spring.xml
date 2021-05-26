@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="1 seconds">
+
+    <contextName>logback</contextName>
+
+    <springProfile name="dev">
+        <property name="LOG_HOME" value="logs" />
+        <property name="ROOT_LEVEL" value="info" />
+    </springProfile>
+
+    <springProfile name="sit">
+        <property name="LOG_HOME" value="/logs" />
+        <property name="ROOT_LEVEL" value="info" />
+    </springProfile>
+
+    <springProfile name="uat">
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
+        <property name="ROOT_LEVEL" value="info" />
+    </springProfile>
+
+    <springProfile name="mt">
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
+        <property name="ROOT_LEVEL" value="info" />
+    </springProfile>
+
+    <springProfile name="prd">
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
+        <property name="ROOT_LEVEL" value="info" />
+    </springProfile>
+
+    <property name="LOG_FORMAT" value="[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%thread] %logger{-1}:%line - %msg%n" />
+
+    <springProfile name="sit">
+        <!--日志导出的到 Logstash-->
+        <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>192.168.22.122:9250</destination>
+            <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"appname":"site-demo"}</customFields>
+            </encoder>
+            <keepAliveDuration>15 minutes</keepAliveDuration>
+        </appender>
+    </springProfile>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/site-demo_info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/site-demo_info.log.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="file_warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/site-demo_warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/site-demo_warn.log.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/site-demo_error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/site-demo_error.log.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="async_stdout" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="stdout" />
+    </appender>
+
+    <appender name="async_info" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="file_info" />
+    </appender>
+
+    <appender name="async_warn" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="file_warn" />
+    </appender>
+
+    <appender name="async_error" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="file_error" />
+    </appender>
+
+    <logger name="com.itsu.site.framework.mapper" level="debug">
+        <appender-ref ref="async_stdout" />
+    </logger>
+
+    <root level="${ROOT_LEVEL}">
+        <appender-ref ref="async_stdout" />
+        <appender-ref ref="async_info" />
+        <appender-ref ref="async_warn" />
+        <appender-ref ref="async_error" />
+        <springProfile name="sit">
+            <appender-ref ref="stash" />
+        </springProfile>
+    </root>
+
+</configuration>

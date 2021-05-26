@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itsu.site.framework.mapper.AccountMapper">
+	
+	<!-- 通过用户名获取用户的角色 -->
+	<select id="getRolesByUsername" resultType="java.lang.String" parameterType="java.lang.String">
+		select distinct(c.name)      
+		from td_account a       
+		left join td_account_role b 
+		on a.account_id = b.account_id 
+		left join td_role c   
+		on b.role_id = c.role_id
+		where a.username = #{username} 
+	</select>
+	
+	<!-- 通过用户名获取用户的权限 -->
+	<select id="getPermissionsByUsername" resultType="java.lang.String" parameterType="java.lang.String">
+		 select distinct(e.name)           
+		 from td_account a                 
+		 left join td_account_role b        
+		 on a.account_id = b.account_id        
+		 left join td_role c               
+		 on b.role_id = c.role_id          
+		 left join td_role_permission d      
+		 on c.role_id = d.role_id           
+		 left join td_permission e           
+		 on d.permission_id = e.permission_id  
+		 where a.username = #{username}
+	</select>
+
+</mapper>

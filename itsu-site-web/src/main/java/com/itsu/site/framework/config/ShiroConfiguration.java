@@ -1,0 +1,198 @@
+/*
+ * @Author: Jerry Su
+ * @Date: 2020-12-23 15:07:59
+ * @Last Modified by: Jerry Su
+ * @Last Modified time: 2021-01-25 15:52:08
+ */
+package com.itsu.site.framework.config;
+
+import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.shiro.AuthenRealmBase;
+import com.itsu.core.shiro.JwtTokenFilter;
+import com.itsu.site.framework.shiro.filter.ItsuSiteApiJwtTokenFilter;
+import com.itsu.site.framework.shiro.realm.AuthenRealm;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import redis.clients.jedis.JedisPoolConfig;
+
+import javax.annotation.Resource;
+import javax.servlet.Filter;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@Configuration
+@AutoConfigureAfter(RedisConfiguration.class)
+public class ShiroConfiguration {
+
+    @Resource
+    private ItsuSiteConfigProperties kProperties;
+
+    @Resource
+    private AuthenRealm authenRealm;
+
+    @Resource
+    private CredentialsMatcher credentialsMatcher;
+
+    @Resource
+    private JwtTokenFilter jwtTokenFilter;
+
+    /**
+     * http请求路劲对应shiro filter配置
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(ShiroFilterChainDefinition.class)
+    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
+        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+        chainDefinition.addPathDefinition("/logout", "logout");
+        chainDefinition.addPathDefinition("/api/**", "jwt");
+        chainDefinition.addPathDefinition("/anon/**", "anon");
+        chainDefinition.addPathDefinition("/login", "anon");
+        return chainDefinition;
+    }
+
+    /**
+     * 自定义jwttokenfilter注入ioc
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(JwtTokenFilter.class)
+    public JwtTokenFilter jwtTokenFilter() {
+        return new ItsuSiteApiJwtTokenFilter();
+    }
+
+    /**
+     * shiro基本设置，并添加自定义jwtfilter
+     *
+     * @param definitions
+     * @param securityManager
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(ShiroFilterFactoryBean.class)
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(ShiroFilterChainDefinition definitions,
+                                                         SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map<String, Filter> filters = new LinkedHashMap<>();
+        filters.put("jwt", jwtTokenFilter);
+        shiroFilterFactoryBean.setFilters(filters);
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(definitions.getFilterChainMap());
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        return shiroFilterFactoryBean;
+    }
+
+    /**
+     * 定义securitymanager，指定认证realm； 指定缓存管理器为redis
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(SessionsSecurityManager.class)
+    public SessionsSecurityManager securityManager(RedisCacheManager redisCacheManager) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        ThreadContext.bind(securityManager);
+        securityManager.setRealms(Arrays.asList(this.authenRealm));
+        securityManager.setCacheManager(redisCacheManager);
+        return securityManager;
+    }
+
+    /**
+     * 自定义认证realm注入ioc
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuthenRealmBase.class)
+    public AuthenRealmBase authenRealm() {
+        AuthenRealm authenRealm = new AuthenRealm();
+        authenRealm.setName("siteAuthenRealm");
+        authenRealm.setAuthenticationCacheName(kProperties.getSecurityConfig().getAuthenticationCacheName());
+        authenRealm.setAuthorizationCacheName(kProperties.getSecurityConfig().getAuthorizationCacheName());
+        authenRealm.setCachingEnabled(true);
+        authenRealm.setAuthorizationCachingEnabled(true);
+        authenRealm.setAuthenticationCachingEnabled(true);
+        authenRealm.setCredentialsMatcher(this.credentialsMatcher);
+        return authenRealm;
+    }
+
+    /**
+     * 指定加密规则为md5以及迭代次数
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(CredentialsMatcher.class)
+    public CredentialsMatcher credentialsMatcher() {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        credentialsMatcher.setHashAlgorithmName(kProperties.getSecurityConfig().getHashAlgorithmName());
+        credentialsMatcher.setHashIterations(kProperties.getSecurityConfig().getHashIterations());
+        return credentialsMatcher;
+    }
+
+    /**
+     * rediscachemanager 注入ioc
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(CacheManager.class)
+    public RedisCacheManager redisCacheManager(RedisManager redisManager) {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager);
+        redisCacheManager.setExpire(kProperties.getSecurityConfig().getCacheExpire());
+        return redisCacheManager;
+    }
+
+    /**
+     * redisManager 注入ioc
+     *
+     * @param jedisPoolConfig
+     * @param redisProperties
+     * @return
+     */
+    @Bean
+    @ConditionalOnBean(RedisCacheManager.class)
+    @ConditionalOnMissingBean(RedisManager.class)
+    public RedisManager redisManager(JedisPoolConfig jedisPoolConfig, RedisProperties redisProperties) {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setJedisPoolConfig(jedisPoolConfig);
+        redisManager.setHost(redisProperties.getHost() + ":" + redisProperties.getPort());
+        redisManager.setPassword(redisProperties.getPassword());
+        redisManager.setDatabase(redisProperties.getDatabase());
+        return redisManager;
+    }
+
+    /**
+     * 开启shiro注解权限控制
+     *
+     * @param securityManager
+     * @return
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
+    }
+
+}

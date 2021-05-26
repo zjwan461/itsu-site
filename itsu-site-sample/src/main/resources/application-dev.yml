@@ -1,0 +1,37 @@
+debug: true
+spring:
+  redis:
+    host: 192.168.31.6
+    port: 6379
+    database: 3
+    timeout: 3000
+    jedis:
+      pool:
+        max-wait: 3000
+        max-active: 10
+        max-idle: 20
+        min-idle: 0
+  datasource:
+    url: jdbc:mysql://192.168.31.6:3310/itsu-site?useSSL=false&characterEncoding=utf8&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 180000
+      connection-timeout: 3000
+      maximum-pool-size: 15
+      max-lifetime: 1800000
+      auto-commit: true
+      connection-test-query: SELECT 1
+itsu:
+  site:
+    script-process:
+      enable: true
+    generate-html:
+      enable: true
+      generate-html-path: D:/
+    allow-origins: all
+    upload-html-script: D:/upload-static-html-dev.bat
+    security-config:
+      cache-expire: 28800
