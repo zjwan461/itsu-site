@@ -1,5 +1,7 @@
 package com.itsu.sample;
 
+import com.itsu.site.framework.config.annotation.EnableGlobalParamCheck;
+import com.itsu.site.framework.config.annotation.EnableRefreshToken;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan(basePackages = "com.itsu.sample.mapper")
+@EnableGlobalParamCheck
+@EnableRefreshToken
 public class SampleApplication {
 
     public static void main(String[] args) {

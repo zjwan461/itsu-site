@@ -3,12 +3,12 @@ package com.itsu.site.framework.config;
 import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.component.mvc.CorsFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
-import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.validate.RequestParamValidate;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.vo.sys.ErrorProperties;
@@ -65,18 +65,21 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnMissingBean(RefreshTokenAspect.class)
     public RefreshTokenAspect refreshTokenAspect() {
         return new RefreshTokenAspectAdaptor();
     }
 
     @Bean
     @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnMissingBean(LocalTokenBlackList.class)
     public LocalTokenBlackList localTokenBlackList() {
         return new LocalTokenBlackList();
     }
 
     @Bean
     @ConditionalOnProperty(name = "itsu.site.global-param-check.enable", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnMissingBean(RequestParamValidate.class)
     public RequestParamValidate requestParamValidate() {
         return new RequestParamValidate();
     }
