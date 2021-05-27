@@ -36,23 +36,23 @@ public class ItsuSiteConfigProperties {
 
     private String disableEmailSuffix;
 
-    private SendgridConfig sendgridConfig;
-
     private String frontUrlPrefix;
-
-    private String resetpwdEmailTimeout;
-
-    private String resetpwdRedisKeyPrefix;
-
-    private String registerEmailTimeout;
-
-    private String registerRedisKeyPrefix;
 
     private String[] allowOrigins;
 
     private GenerateHtml generateHtml;
 
     private ScriptProcess scriptProcess;
+
+    private String customErrorProperties;
+
+    public String getCustomErrorProperties() {
+        return customErrorProperties;
+    }
+
+    public void setCustomErrorProperties(String customErrorProperties) {
+        this.customErrorProperties = customErrorProperties;
+    }
 
     public GenerateHtml getGenerateHtml() {
         return generateHtml;
@@ -707,20 +707,6 @@ public class ItsuSiteConfigProperties {
     }
 
     /**
-     * @return the sendgridConfig
-     */
-    public SendgridConfig getSendgridConfig() {
-        return sendgridConfig;
-    }
-
-    /**
-     * @param sendgridConfig the sendgridConfig to set
-     */
-    public void setSendgridConfig(SendgridConfig sendgridConfig) {
-        this.sendgridConfig = sendgridConfig;
-    }
-
-    /**
      * @return the frontUrlPrefix
      */
     public String getFrontUrlPrefix() {
@@ -734,61 +720,6 @@ public class ItsuSiteConfigProperties {
         this.frontUrlPrefix = frontUrlPrefix;
     }
 
-    /**
-     * @return the resetpwdEmailTimeout
-     */
-    public String getResetpwdEmailTimeout() {
-        return resetpwdEmailTimeout;
-    }
-
-    /**
-     * @param resetpwdEmailTimeout the resetpwdEmailTimeout to set
-     */
-    public void setResetpwdEmailTimeout(String resetpwdEmailTimeout) {
-        this.resetpwdEmailTimeout = resetpwdEmailTimeout;
-    }
-
-    /**
-     * @return the resetpwdRedisKeyPrefix
-     */
-    public String getResetpwdRedisKeyPrefix() {
-        return resetpwdRedisKeyPrefix;
-    }
-
-    /**
-     * @param resetpwdRedisKeyPrefix the resetpwdRedisKeyPrefix to set
-     */
-    public void setResetpwdRedisKeyPrefix(String resetpwdRedisKeyPrefix) {
-        this.resetpwdRedisKeyPrefix = resetpwdRedisKeyPrefix;
-    }
-
-    /**
-     * @return the registerEmailTimeout
-     */
-    public String getRegisterEmailTimeout() {
-        return registerEmailTimeout;
-    }
-
-    /**
-     * @param registerEmailTimeout the registerEmailTimeout to set
-     */
-    public void setRegisterEmailTimeout(String registerEmailTimeout) {
-        this.registerEmailTimeout = registerEmailTimeout;
-    }
-
-    /**
-     * @return the registerRedisKeyPrefix
-     */
-    public String getRegisterRedisKeyPrefix() {
-        return registerRedisKeyPrefix;
-    }
-
-    /**
-     * @param registerRedisKeyPrefix the registerRedisKeyPrefix to set
-     */
-    public void setRegisterRedisKeyPrefix(String registerRedisKeyPrefix) {
-        this.registerRedisKeyPrefix = registerRedisKeyPrefix;
-    }
 
     /**
      * @return the domain

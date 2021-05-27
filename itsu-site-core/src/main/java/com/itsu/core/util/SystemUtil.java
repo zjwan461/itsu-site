@@ -190,4 +190,14 @@ public final class SystemUtil {
         return "prd".equalsIgnoreCase(getEnv());
     }
 
+
+    /**
+     * 获取自定义ErrorProperties位置，需要保证在类路径下
+     *
+     * @return
+     */
+    public static String getCustomErrorPropertiesPath() {
+        return getItsuSiteConfigProperties().getCustomErrorProperties();
+    }
+
 }

@@ -45,6 +45,7 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 itsu:
   site:
+    custom-error-properties: classpath:code.properties
     env: ${spring.profiles.active}
     global-param-check:
       enable: true
