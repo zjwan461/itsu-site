@@ -1,5 +1,6 @@
 package com.itsu.sample.controller;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.security.AccessStrategy;
 import com.itsu.core.component.security.StrategyEnum;
@@ -46,5 +47,10 @@ public class DemoController {
     @GetMapping("/demo")
     public String idx() {
         return "my db version is " + mapper.selectDBVersion();
+    }
+
+    @GetMapping("/listBean")
+    public String[] listBean() {
+        return SpringUtil.getApplicationContext().getBeanDefinitionNames();
     }
 }
