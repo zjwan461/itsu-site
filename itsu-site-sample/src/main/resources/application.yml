@@ -45,8 +45,10 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 itsu:
   site:
+    api-exception-handler:
+      enable: true
     mapper-cache:
-      cache-type: REDIS
+      cache-type: memory
       cache-time: 30
       cache-prefix: mybatis:cache
     custom-error-properties: classpath:code.properties
@@ -71,5 +73,5 @@ itsu:
       resp: false
     access-token:
       dynamic: true
-      type: REDIS
+      type: memory
       expire: 8h
