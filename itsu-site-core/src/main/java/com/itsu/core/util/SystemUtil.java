@@ -200,4 +200,15 @@ public final class SystemUtil {
         return getItsuSiteConfigProperties().getCustomErrorProperties();
     }
 
+    public static ItsuSiteConfigProperties.MapperCache.CacheType getMapperCacheType() {
+        return getItsuSiteConfigProperties().getMapperCache().getCacheType();
+    }
+
+    public static int getMapperCacheTime() {
+        return getItsuSiteConfigProperties().getMapperCache().getCacheTime();
+    }
+
+    public static String getMapperCachePrefix() {
+        return getItsuSiteConfigProperties().getMapperCache().getCachePrefix();
+    }
 }

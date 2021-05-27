@@ -8,6 +8,7 @@ import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.component.mvc.CorsFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
+import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.validate.RequestParamValidate;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.vo.sys.ErrorProperties;
@@ -26,6 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -35,10 +37,12 @@ import org.springframework.web.servlet.DispatcherServlet;
  * @Date 2021/5/21 10:19
  */
 @Configuration
+@ConditionalOnProperty(name = "itsu.site.enable", havingValue = "true", matchIfMissing = true)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableAsync
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
+@Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
 public class ItsuSiteAutoConfiguration {
 
     private final ItsuSiteConfigProperties itsuSiteConfigProperties;
@@ -127,5 +131,10 @@ public class ItsuSiteAutoConfiguration {
     @ConditionalOnBean(DispatcherServlet.class)
     public SpringMvcHelper springMvcHelper() {
         return new SpringMvcHelper();
+    }
+
+    @Bean
+    public MapperCacheTransfer mapperCacheTransfer() {
+        return new MapperCacheTransfer();
     }
 }

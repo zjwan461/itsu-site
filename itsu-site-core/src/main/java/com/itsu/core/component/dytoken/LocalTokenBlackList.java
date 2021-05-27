@@ -20,7 +20,7 @@ public class LocalTokenBlackList implements Serializable {
      */
     private static final long serialVersionUID = -7091248003525441448L;
 
-    private TimedCache<String, String> timedCache = null;
+    private volatile TimedCache<String, String> timedCache = null;
 
     @PostConstruct
     public void init() {

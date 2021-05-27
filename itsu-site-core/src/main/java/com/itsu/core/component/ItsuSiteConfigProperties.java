@@ -12,6 +12,10 @@ import java.util.List;
 @ConfigurationProperties(prefix = "itsu.site")
 public class ItsuSiteConfigProperties {
 
+    private boolean enable = true;
+
+    private MapperCache mapperCache = new MapperCache();
+
     private String name;
 
     private String domain;
@@ -45,6 +49,22 @@ public class ItsuSiteConfigProperties {
     private ScriptProcess scriptProcess;
 
     private String customErrorProperties;
+
+    public MapperCache getMapperCache() {
+        return mapperCache;
+    }
+
+    public void setMapperCache(MapperCache mapperCache) {
+        this.mapperCache = mapperCache;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 
     public String getCustomErrorProperties() {
         return customErrorProperties;
@@ -787,6 +807,43 @@ public class ItsuSiteConfigProperties {
 
         public void setEnable(boolean enable) {
             this.enable = enable;
+        }
+    }
+
+    public static class MapperCache {
+
+        private CacheType cacheType = CacheType.MEMORY;
+
+        private int cacheTime = 30;
+
+        private String cachePrefix = "mybatis:cache";
+
+        public String getCachePrefix() {
+            return cachePrefix;
+        }
+
+        public void setCachePrefix(String cachePrefix) {
+            this.cachePrefix = cachePrefix;
+        }
+
+        public int getCacheTime() {
+            return cacheTime;
+        }
+
+        public void setCacheTime(int cacheTime) {
+            this.cacheTime = cacheTime;
+        }
+
+        public CacheType getCacheType() {
+            return cacheType;
+        }
+
+        public void setCacheType(CacheType cacheType) {
+            this.cacheType = cacheType;
+        }
+
+        public static enum CacheType {
+            REDIS, MEMORY
         }
     }
 }

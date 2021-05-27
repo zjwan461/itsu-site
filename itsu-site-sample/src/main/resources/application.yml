@@ -45,6 +45,10 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 itsu:
   site:
+    mapper-cache:
+      cache-type: REDIS
+      cache-time: 30
+      cache-prefix: mybatis:cache
     custom-error-properties: classpath:code.properties
     env: ${spring.profiles.active}
     global-param-check:
