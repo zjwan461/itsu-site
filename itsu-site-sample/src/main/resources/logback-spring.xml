@@ -4,42 +4,42 @@
     <contextName>logback</contextName>
 
     <springProfile name="dev">
-        <property name="LOG_HOME" value="logs" />
-        <property name="ROOT_LEVEL" value="info" />
+        <property name="LOG_HOME" value="logs"/>
+        <property name="ROOT_LEVEL" value="info"/>
     </springProfile>
 
     <springProfile name="sit">
-        <property name="LOG_HOME" value="/logs" />
-        <property name="ROOT_LEVEL" value="info" />
+        <property name="LOG_HOME" value="/logs"/>
+        <property name="ROOT_LEVEL" value="info"/>
     </springProfile>
 
     <springProfile name="uat">
-        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
-        <property name="ROOT_LEVEL" value="info" />
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs"/>
+        <property name="ROOT_LEVEL" value="info"/>
     </springProfile>
 
     <springProfile name="mt">
-        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
-        <property name="ROOT_LEVEL" value="info" />
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs"/>
+        <property name="ROOT_LEVEL" value="info"/>
     </springProfile>
 
     <springProfile name="prd">
-        <property name="LOG_HOME" value="/usr/local/itsu-site/logs" />
-        <property name="ROOT_LEVEL" value="info" />
+        <property name="LOG_HOME" value="/usr/local/itsu-site/logs"/>
+        <property name="ROOT_LEVEL" value="info"/>
     </springProfile>
 
-    <property name="LOG_FORMAT" value="[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%thread] %logger{-1}:%line - %msg%n" />
+    <property name="LOG_FORMAT" value="[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%thread] %logger{-1}:%line - %msg%n"/>
 
-    <springProfile name="sit">
-        <!--日志导出的到 Logstash-->
-        <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-            <destination>192.168.22.122:9250</destination>
-            <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
-                <customFields>{"appname":"site-demo"}</customFields>
-            </encoder>
-            <keepAliveDuration>15 minutes</keepAliveDuration>
-        </appender>
-    </springProfile>
+    <!-- <springProfile name="sit">
+         &lt;!&ndash;日志导出的到 Logstash&ndash;&gt;
+         <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+             <destination>192.168.22.122:9250</destination>
+             <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
+                 <customFields>{"appname":"site-demo"}</customFields>
+             </encoder>
+             <keepAliveDuration>15 minutes</keepAliveDuration>
+         </appender>
+     </springProfile>-->
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -105,42 +105,42 @@
         <discardingThreshold>0</discardingThreshold>
         <queueSize>256</queueSize>
         <includeCallerData>true</includeCallerData>
-        <appender-ref ref="stdout" />
+        <appender-ref ref="stdout"/>
     </appender>
 
     <appender name="async_info" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>256</queueSize>
         <includeCallerData>true</includeCallerData>
-        <appender-ref ref="file_info" />
+        <appender-ref ref="file_info"/>
     </appender>
 
     <appender name="async_warn" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>256</queueSize>
         <includeCallerData>true</includeCallerData>
-        <appender-ref ref="file_warn" />
+        <appender-ref ref="file_warn"/>
     </appender>
 
     <appender name="async_error" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>256</queueSize>
         <includeCallerData>true</includeCallerData>
-        <appender-ref ref="file_error" />
+        <appender-ref ref="file_error"/>
     </appender>
 
-    <logger name="com.itsu.site.framework.mapper" level="debug">
-        <appender-ref ref="async_stdout" />
-    </logger>
+    <logger name="com.itsu.site.framework.mapper" level="debug"/>
+
+    <logger name="com.itsu.sample.mapper" level="debug"/>
 
     <root level="${ROOT_LEVEL}">
-        <appender-ref ref="async_stdout" />
-        <appender-ref ref="async_info" />
-        <appender-ref ref="async_warn" />
-        <appender-ref ref="async_error" />
-        <springProfile name="sit">
-            <appender-ref ref="stash" />
-        </springProfile>
+        <appender-ref ref="async_stdout"/>
+        <appender-ref ref="async_info"/>
+        <appender-ref ref="async_warn"/>
+        <appender-ref ref="async_error"/>
+        <!--  <springProfile name="sit">
+              <appender-ref ref="stash"/>
+          </springProfile>-->
     </root>
 
 </configuration>

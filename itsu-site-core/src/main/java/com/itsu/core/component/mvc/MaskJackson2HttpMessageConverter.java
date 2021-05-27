@@ -1,8 +1,8 @@
 /*
- * @Author: Jerry Su 
- * @Date: 2021-02-07 10:12:12 
- * @Last Modified by:   Jerry Su 
- * @Last Modified time: 2021-02-07 10:12:12 
+ * @Author: Jerry Su
+ * @Date: 2021-02-07 10:12:12
+ * @Last Modified by:   Jerry Su
+ * @Last Modified time: 2021-02-07 10:12:12
  */
 package com.itsu.core.component.mvc;
 
@@ -52,7 +52,7 @@ public class MaskJackson2HttpMessageConverter extends MappingJackson2HttpMessage
                 log.warn("error to execute doLogMask/doRespMask, error message: {}", e.getMessage());
             }
         } else {
-            log.warn("return data type is not instanceof {}", JsonResult.class.getName());
+            log.warn("return data type is not instanceof {}, which is {}", JsonResult.class.getName(), object.getClass().getName());
             log.info("write response body data: {}", JSONUtil.toJsonStr(object));
         }
         super.writeInternal(object, type, outputMessage);

@@ -1,5 +1,7 @@
 package com.itsu.sample;
 
+import com.itsu.core.vo.sys.RefreshTokenType;
+import com.itsu.site.framework.config.annotation.EnableApiExceptionHandler;
 import com.itsu.site.framework.config.annotation.EnableGlobalParamCheck;
 import com.itsu.site.framework.config.annotation.EnableRefreshToken;
 import org.mybatis.spring.annotation.MapperScan;
@@ -13,7 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan(basePackages = "com.itsu.sample.mapper")
 @EnableGlobalParamCheck
-@EnableRefreshToken
+@EnableRefreshToken(type = RefreshTokenType.REDIS)
+@EnableApiExceptionHandler
 public class SampleApplication {
 
     public static void main(String[] args) {

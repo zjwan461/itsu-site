@@ -36,7 +36,7 @@ public class SpringMvcHelper {
             else
                 logger.warn("current request Handler is not a HandlerMethod");
         } catch (Exception e) {
-            logger.warn("can not get the HandlerMethod for current request");
+            logger.debug("can not get the HandlerMethod for current request, maybe current requestURI [{}] not provided requestURI by system", request.getRequestURI());
         }
         return null;
     }

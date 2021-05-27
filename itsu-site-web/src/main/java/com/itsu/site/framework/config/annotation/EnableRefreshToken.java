@@ -1,5 +1,6 @@
 package com.itsu.site.framework.config.annotation;
 
+import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.config.importselector.RefreshTokenImportSelector;
 import org.springframework.context.annotation.Import;
 
@@ -14,4 +15,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Import(RefreshTokenImportSelector.class)
 public @interface EnableRefreshToken {
+    RefreshTokenType type() default RefreshTokenType.MEMORY;
 }

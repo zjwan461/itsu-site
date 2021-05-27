@@ -14,6 +14,8 @@ public class ItsuSiteConfigProperties {
 
     private boolean enable = true;
 
+    private ApiExceptionHandler apiExceptionHandler = new ApiExceptionHandler();
+
     private MapperCache mapperCache = new MapperCache();
 
     private String name;
@@ -26,17 +28,15 @@ public class ItsuSiteConfigProperties {
 
     private Mask mask;
 
-    private AccessToken accessToken;
+    private AccessToken accessToken = new AccessToken();
 
     private boolean loginAesEncrypt;
 
-    private SecurityConfig securityConfig;
+    private SecurityConfig securityConfig = new SecurityConfig();
 
-    private GlobalParamCheck globalParamCheck;
+    private GlobalParamCheck globalParamCheck = new GlobalParamCheck();
 
-    private String uploadHtmlScript;
-
-    private AntiCrawler antiCrawler;
+    private AntiCrawler antiCrawler = new AntiCrawler();
 
     private String disableEmailSuffix;
 
@@ -44,11 +44,19 @@ public class ItsuSiteConfigProperties {
 
     private String[] allowOrigins;
 
-    private GenerateHtml generateHtml;
+    private GenerateHtml generateHtml = new GenerateHtml();
 
-    private ScriptProcess scriptProcess;
+    private ScriptProcess scriptProcess = new ScriptProcess();
 
     private String customErrorProperties;
+
+    public ApiExceptionHandler getApiExceptionHandler() {
+        return apiExceptionHandler;
+    }
+
+    public void setApiExceptionHandler(ApiExceptionHandler apiExceptionHandler) {
+        this.apiExceptionHandler = apiExceptionHandler;
+    }
 
     public MapperCache getMapperCache() {
         return mapperCache;
@@ -118,6 +126,163 @@ public class ItsuSiteConfigProperties {
         this.aesKey = aesKey;
     }
 
+    /**
+     * @return the mask
+     */
+    public Mask getMask() {
+        return mask;
+    }
+
+    /**
+     * @param mask the mask to set
+     */
+    public void setMask(Mask mask) {
+        this.mask = mask;
+    }
+
+    /**
+     * @return the accessToken
+     */
+    public AccessToken getAccessToken() {
+        return accessToken;
+    }
+
+    /**
+     * @param accessToken the accessToken to set
+     */
+    public void setAccessToken(AccessToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    /**
+     * @return the loginAesEncrypt
+     */
+    public boolean isLoginAesEncrypt() {
+        return loginAesEncrypt;
+    }
+
+    /**
+     * @param loginAesEncrypt the loginAesEncrypt to set
+     */
+    public void setLoginAesEncrypt(boolean loginAesEncrypt) {
+        this.loginAesEncrypt = loginAesEncrypt;
+    }
+
+    /**
+     * @return the securityConfig
+     */
+    public SecurityConfig getSecurityConfig() {
+        return securityConfig;
+    }
+
+    /**
+     * @param securityConfig the securityConfig to set
+     */
+    public void setSecurityConfig(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
+    }
+
+    /**
+     * @return the globalParamCheck
+     */
+    public GlobalParamCheck getGlobalParamCheck() {
+        return globalParamCheck;
+    }
+
+    /**
+     * @param globalParamCheck the globalParamCheck to set
+     */
+    public void setGlobalParamCheck(GlobalParamCheck globalParamCheck) {
+        this.globalParamCheck = globalParamCheck;
+    }
+
+    /**
+     * @return the env
+     */
+    public String getEnv() {
+        return env;
+    }
+
+    /**
+     * @param env the env to set
+     */
+    public void setEnv(String env) {
+        this.env = env;
+    }
+
+    /**
+     * @return the antiCrawler
+     */
+    public AntiCrawler getAntiCrawler() {
+        return antiCrawler;
+    }
+
+    /**
+     * @param antiCrawler the antiCrawler to set
+     */
+    public void setAntiCrawler(AntiCrawler antiCrawler) {
+        this.antiCrawler = antiCrawler;
+    }
+
+    /**
+     * @return the disableEmailSuffix
+     */
+    public String getDisableEmailSuffix() {
+        return disableEmailSuffix;
+    }
+
+    /**
+     * @param disableEmailSuffix the disableEmailSuffix to set
+     */
+    public void setDisableEmailSuffix(String disableEmailSuffix) {
+        this.disableEmailSuffix = disableEmailSuffix;
+    }
+
+    /**
+     * @return the frontUrlPrefix
+     */
+    public String getFrontUrlPrefix() {
+        return frontUrlPrefix;
+    }
+
+    /**
+     * @param frontUrlPrefix the frontUrlPrefix to set
+     */
+    public void setFrontUrlPrefix(String frontUrlPrefix) {
+        this.frontUrlPrefix = frontUrlPrefix;
+    }
+
+    /**
+     * @return the domain
+     */
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     * @param domain the domain to set
+     */
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    /**
+     * @return the allowOrigins
+     */
+    public String[] getAllowOrigins() {
+        return allowOrigins;
+    }
+
+    /**
+     * @param allowOrigins the allowOrigins to set
+     */
+    public void setAllowOrigins(String[] allowOrigins) {
+        if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
+            this.allowOrigins = new String[]{"*"};
+        else
+            this.allowOrigins = allowOrigins;
+    }
+
     public static class Mask {
         private boolean log;
         private boolean resp;
@@ -152,29 +317,15 @@ public class ItsuSiteConfigProperties {
 
     }
 
-    /**
-     * @return the mask
-     */
-    public Mask getMask() {
-        return mask;
-    }
-
-    /**
-     * @param mask the mask to set
-     */
-    public void setMask(Mask mask) {
-        this.mask = mask;
-    }
-
     public static class AccessToken {
 
-        private boolean dynamic;
+        private boolean dynamic = false;
 
         private String keyPrefix = "accesstoken:blacklist:";
 
         private RefreshTokenType type = RefreshTokenType.REDIS;
 
-        private String expire;
+        private String expire = "24h";
 
         /**
          * @return the dynamic
@@ -233,34 +384,6 @@ public class ItsuSiteConfigProperties {
         }
     }
 
-    /**
-     * @return the accessToken
-     */
-    public AccessToken getAccessToken() {
-        return accessToken;
-    }
-
-    /**
-     * @param accessToken the accessToken to set
-     */
-    public void setAccessToken(AccessToken accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    /**
-     * @return the loginAesEncrypt
-     */
-    public boolean isLoginAesEncrypt() {
-        return loginAesEncrypt;
-    }
-
-    /**
-     * @param loginAesEncrypt the loginAesEncrypt to set
-     */
-    public void setLoginAesEncrypt(boolean loginAesEncrypt) {
-        this.loginAesEncrypt = loginAesEncrypt;
-    }
-
     public static class SecurityConfig {
         private String loginUrl = "/login";
 
@@ -275,7 +398,7 @@ public class ItsuSiteConfigProperties {
         private int hashIterations = 1;
 
         // 单位是秒s
-        private int cacheExpire = 1 * 60 * 60;
+        private int cacheExpire = 60 * 60;
 
         /**
          * @return the loginUrl
@@ -377,20 +500,6 @@ public class ItsuSiteConfigProperties {
 
     }
 
-    /**
-     * @return the securityConfig
-     */
-    public SecurityConfig getSecurityConfig() {
-        return securityConfig;
-    }
-
-    /**
-     * @param securityConfig the securityConfig to set
-     */
-    public void setSecurityConfig(SecurityConfig securityConfig) {
-        this.securityConfig = securityConfig;
-    }
-
     public static class GlobalParamCheck {
 
         private boolean enable = true;
@@ -425,48 +534,6 @@ public class ItsuSiteConfigProperties {
             this.regExs = regExs;
         }
 
-    }
-
-    /**
-     * @return the globalParamCheck
-     */
-    public GlobalParamCheck getGlobalParamCheck() {
-        return globalParamCheck;
-    }
-
-    /**
-     * @param globalParamCheck the globalParamCheck to set
-     */
-    public void setGlobalParamCheck(GlobalParamCheck globalParamCheck) {
-        this.globalParamCheck = globalParamCheck;
-    }
-
-    /**
-     * @return the uploadHtmlScript
-     */
-    public String getUploadHtmlScript() {
-        return uploadHtmlScript;
-    }
-
-    /**
-     * @param uploadHtmlScript the uploadHtmlScript to set
-     */
-    public void setUploadHtmlScript(String uploadHtmlScript) {
-        this.uploadHtmlScript = uploadHtmlScript;
-    }
-
-    /**
-     * @return the env
-     */
-    public String getEnv() {
-        return env;
-    }
-
-    /**
-     * @param env the env to set
-     */
-    public void setEnv(String env) {
-        this.env = env;
     }
 
     public static class AntiCrawler {
@@ -533,34 +600,6 @@ public class ItsuSiteConfigProperties {
         public void setTsOffset(Integer tsOffset) {
             this.tsOffset = tsOffset;
         }
-    }
-
-    /**
-     * @return the antiCrawler
-     */
-    public AntiCrawler getAntiCrawler() {
-        return antiCrawler;
-    }
-
-    /**
-     * @param antiCrawler the antiCrawler to set
-     */
-    public void setAntiCrawler(AntiCrawler antiCrawler) {
-        this.antiCrawler = antiCrawler;
-    }
-
-    /**
-     * @return the disableEmailSuffix
-     */
-    public String getDisableEmailSuffix() {
-        return disableEmailSuffix;
-    }
-
-    /**
-     * @param disableEmailSuffix the disableEmailSuffix to set
-     */
-    public void setDisableEmailSuffix(String disableEmailSuffix) {
-        this.disableEmailSuffix = disableEmailSuffix;
     }
 
     public static class SendgridConfig {
@@ -726,59 +765,11 @@ public class ItsuSiteConfigProperties {
         }
     }
 
-    /**
-     * @return the frontUrlPrefix
-     */
-    public String getFrontUrlPrefix() {
-        return frontUrlPrefix;
-    }
-
-    /**
-     * @param frontUrlPrefix the frontUrlPrefix to set
-     */
-    public void setFrontUrlPrefix(String frontUrlPrefix) {
-        this.frontUrlPrefix = frontUrlPrefix;
-    }
-
-
-    /**
-     * @return the domain
-     */
-    public String getDomain() {
-        return domain;
-    }
-
-    /**
-     * @param domain the domain to set
-     */
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    /**
-     * @return the allowOrigins
-     */
-    public String[] getAllowOrigins() {
-        return allowOrigins;
-    }
-
-    /**
-     * @param allowOrigins the allowOrigins to set
-     */
-    public void setAllowOrigins(String[] allowOrigins) {
-        if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
-            this.allowOrigins = new String[]{"*"};
-        else
-            this.allowOrigins = allowOrigins;
-    }
-
     public static class GenerateHtml {
 
-        private boolean enable = true;
-
-        private String generateHtmlPath = DEFAULT_GENERATE_HTML_PATH;
-
         private static final String DEFAULT_GENERATE_HTML_PATH = "/usr/local/itsu-site";
+        private boolean enable = true;
+        private String generateHtmlPath = DEFAULT_GENERATE_HTML_PATH;
 
         public String getGenerateHtmlPath() {
             return generateHtmlPath;
@@ -842,8 +833,20 @@ public class ItsuSiteConfigProperties {
             this.cacheType = cacheType;
         }
 
-        public static enum CacheType {
+        public enum CacheType {
             REDIS, MEMORY
+        }
+    }
+
+    public static class ApiExceptionHandler {
+        private boolean enable = false;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
         }
     }
 }

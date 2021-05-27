@@ -18,16 +18,11 @@ import com.itsu.site.framework.component.ScriptProcess;
 import com.itsu.site.framework.controller.AccountLoginController;
 import com.itsu.site.framework.controller.FilterErrorController;
 import com.itsu.site.framework.controller.handler.ApiExceptionHandler;
+import com.itsu.site.framework.controller.handler.ApiExceptionHandlerBase;
 import com.itsu.site.framework.service.AccountServiceImpl;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -59,6 +54,7 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ErrorProperties.class)
+    @DependsOn("springUtil")
     public ErrorProperties errorProperties() {
         return ErrorPropertiesFactory.getObject();
     }
@@ -71,14 +67,15 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true")
+    @ConditionalOnExpression("'${itsu.site.access-token.type}'.equalsIgnoreCase('MEMORY')")
     @ConditionalOnMissingBean(LocalTokenBlackList.class)
     public LocalTokenBlackList localTokenBlackList() {
         return new LocalTokenBlackList();
     }
 
     @Bean
-    @ConditionalOnProperty(name = "itsu.site.global-param-check.enable", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(name = "itsu.site.global-param-check.enable", havingValue = "true")
     @ConditionalOnMissingBean(RequestParamValidate.class)
     public RequestParamValidate requestParamValidate() {
         return new RequestParamValidate();
@@ -96,9 +93,10 @@ public class ItsuSiteAutoConfiguration {
         return new ScriptProcess();
     }
 
-
     @Bean
-    public ApiExceptionHandler apiExceptionHandler() {
+    @ConditionalOnProperty(name = "itsu.site.api-exception-handler.enable", havingValue = "true")
+    @ConditionalOnMissingBean(ApiExceptionHandlerBase.class)
+    public ApiExceptionHandlerBase apiExceptionHandler() {
         return new ApiExceptionHandler();
     }
 

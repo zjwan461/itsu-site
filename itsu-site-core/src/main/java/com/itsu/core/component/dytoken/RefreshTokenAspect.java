@@ -8,8 +8,8 @@ package com.itsu.core.component.dytoken;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import com.itsu.core.component.ItsuSiteConfigProperties;
-import com.itsu.core.exception.DynamicTokenException;
 import com.itsu.core.exception.CodeAbleException;
+import com.itsu.core.exception.DynamicTokenException;
 import com.itsu.core.util.JWTUtil;
 import com.itsu.core.util.RequestContextHolderUtil;
 import com.itsu.core.util.SystemUtil;
@@ -24,6 +24,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -44,7 +45,7 @@ public abstract class RefreshTokenAspect {
     @Resource(name = "jsonRedisTemplate")
     private RedisTemplate redisTemplate;
 
-    @Resource
+    @Autowired(required = false)
     private LocalTokenBlackList localTokenBlackList;
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RestController) || @annotation(com.itsu.core.component.dytoken.RefreshToken)")
