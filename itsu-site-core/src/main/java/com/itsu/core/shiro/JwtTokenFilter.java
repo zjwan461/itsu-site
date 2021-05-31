@@ -49,29 +49,29 @@ public abstract class JwtTokenFilter extends AccessControlFilter {
             return true;
 
         boolean verify = false;
-        String accesstoken = ServletUtil.getHeader(WebUtils.toHttp(request), "accesstoken", "utf-8");
-        if (StringUtils.hasText(accesstoken)) {
+        String accessToken = ServletUtil.getHeader(WebUtils.toHttp(request), "accessToken", "utf-8");
+        if (StringUtils.hasText(accessToken)) {
             String username = null;
             try {
-                username = JWTUtil.getUsername(accesstoken);
+                username = JWTUtil.getUsername(accessToken);
             } catch (Exception e) {
-                log.info("bad accesstoken for {}; can not decode accesstoken: [{}]",
-                        WebUtils.toHttp(request).getRequestURI(), accesstoken);
+                log.info("bad accessToken for {}; can not decode accessToken: [{}]",
+                        WebUtils.toHttp(request).getRequestURI(), accessToken);
             }
             if (StringUtils.hasText(username)) {
                 LoginObject user = getAccountInfoByUserName(username);
                 if (user != null) {
                     try {
-                        JWTUtil.verify(accesstoken, user.getSecurityKey());
+                        JWTUtil.verify(accessToken, user.getSecurityKey());
                         verify = true;
                     } catch (Exception e) {
-                        log.info("bad accesstoken for {} ", WebUtils.toHttp(request).getRequestURI());
+                        log.info("bad accessToken for {} ", WebUtils.toHttp(request).getRequestURI());
                     }
                 } else
                     log.info("can not find the account {} ", username);
             }
         } else
-            log.info("bad request, no accesstoken found ");
+            log.info("bad request, no accessToken found ");
         return verify;
     }
 

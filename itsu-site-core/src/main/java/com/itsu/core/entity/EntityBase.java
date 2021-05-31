@@ -6,9 +6,15 @@
  */
 package com.itsu.core.entity;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.itsu.core.vo.io.TransformSetting;
 import com.itsu.core.vo.io.resp.RespObjBase;
 
-public interface EntityBase<T extends RespObjBase> {
+public interface EntityBase<T extends RespObjBase> extends TransformSetting<T> {
 
-    T transform2RespObject();
+    default T transform2RespObject(){
+        T invoke = invoke();
+        BeanUtil.copyProperties(this, invoke, options());
+        return invoke;
+    }
 }

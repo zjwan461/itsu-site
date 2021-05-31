@@ -35,7 +35,7 @@ public class LoginReqVo implements ReqObjBase<Account> {
     }
 
     @Override
-    public Account transform2Entity() {
-        return null;
+    public Account invoke() {
+        return new Account();
     }
 }

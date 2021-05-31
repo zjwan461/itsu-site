@@ -49,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
         user.setLastLoginTime(DateUtil.now());
         accountMapper.updateById(user);
         LoginRespVo data = new LoginRespVo();
-        data.setAccesstoken(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
+        data.setAccessToken(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
         return JsonResult.ok(data);
     }
 

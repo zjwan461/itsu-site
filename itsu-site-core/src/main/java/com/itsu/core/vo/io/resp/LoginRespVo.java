@@ -8,13 +8,15 @@ import java.io.Serializable;
  */
 public class LoginRespVo implements RespObjBase, Serializable {
 
-    private String accesstoken;
+    private String accessToken;
 
-    public String getAccesstoken() {
-        return accesstoken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccesstoken(String accesstoken) {
-        this.accesstoken = accesstoken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
+
+
 }
