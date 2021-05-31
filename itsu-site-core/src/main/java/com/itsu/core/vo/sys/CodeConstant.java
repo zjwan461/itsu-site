@@ -10,6 +10,7 @@ public enum CodeConstant {
     DEFAULT_ERROR_CODE(10001),
     AUTHEN_ERROR_CODE(10002),
     BIND_ERROR_CODE(10003),
+    AES_ERROR_CODE(10004),
     INVALID_USERNAME_OR_PASSWORD(10010);
 
     private Integer errorCode;

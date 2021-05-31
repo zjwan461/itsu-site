@@ -33,15 +33,13 @@ public class AesUsernamePasswordToken extends UsernamePasswordToken {
         ItsuSiteConfigProperties kProperties = SpringUtil.getBean(ItsuSiteConfigProperties.class);
         String aesKey = kProperties.getAesKey();
         if (StringUtils.isEmpty(aesKey)) {
-            logger.error("AES key can not be empty");
-            throw new CodeAbleException(CodeConstant.DEFAULT_ERROR_CODE.getErrorCode());
+            throw new CodeAbleException(CodeConstant.AES_ERROR_CODE.getErrorCode(), "AES key can not by empty");
         }
         try {
             username = AESUtil.decrypt(username, aesKey);
             password = AESUtil.decrypt(password, aesKey);
         } catch (Exception e) {
-//            logger.error("AES decode error", e);
-            throw new CodeAbleException(CodeConstant.DEFAULT_ERROR_CODE.getErrorCode(), "AES decode error");
+            throw new CodeAbleException(CodeConstant.AES_ERROR_CODE.getErrorCode());
         }
         this.setUsername(username);
         this.setPassword(password.toCharArray());

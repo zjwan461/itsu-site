@@ -1,6 +1,5 @@
 package com.itsu.site.framework.shiro.realm;
 
-import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.entity.Account;
 import com.itsu.core.shiro.AesUsernamePasswordToken;
@@ -68,10 +67,8 @@ public class AuthenRealm extends AuthenRealmBase {
 
 	@Override
 	protected Account getUserInfoByUserName(String username) {
-		AccountMapper bean = SpringUtil.getBean(AccountMapper.class);
 		QueryWrapper<Account> condition = new QueryWrapper<>();
 		condition.eq("username", username);
-		bean.selectOne(condition);
 		return accountMapper.selectOne(condition);
 	}
 
