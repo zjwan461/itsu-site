@@ -99,6 +99,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.properties</include>
                     <include>META-INF/spring.factories</include>
+                    <include>**/*.sql</include>
                 </includes>
             </resource>
         </resources>

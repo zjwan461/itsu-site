@@ -19,27 +19,27 @@ public class ClassPathResourceUtil {
         matchResource = new PathMatchingResourcePatternResolver();
     }
 
-    public Resource getResource(String location) {
+    public static Resource getResource(String location) {
         return matchResource.getResource(location);
     }
 
-    public Resource[] getResources(String location) throws IOException {
+    public static Resource[] getResources(String location) throws IOException {
         return matchResource.getResources(location);
     }
 
-    public InputStream getInputStream(String location) throws IOException {
+    public static InputStream getInputStream(String location) throws IOException {
         Resource resource = getResource(location);
-        return resource != null ? resource.getInputStream() : null;
+        return resource.getInputStream();
     }
 
-    public File getFile(String location) throws IOException {
+    public static File getFile(String location) throws IOException {
         Resource resource = getResource(location);
-        return resource != null ? resource.getFile() : null;
+        return resource.getFile();
     }
 
-    public URL getURL(String location) throws IOException {
+    public static URL getURL(String location) throws IOException {
         Resource resource = getResource(location);
-        return resource != null ? resource.getURL() : null;
+        return resource.getURL();
     }
 
 }

@@ -50,6 +50,16 @@ public class ItsuSiteConfigProperties {
 
     private String customErrorProperties;
 
+    private AutoCreateDbTable autoCreateDbTable = new AutoCreateDbTable();
+
+    public AutoCreateDbTable getAutoCreateDbTable() {
+        return autoCreateDbTable;
+    }
+
+    public void setAutoCreateDbTable(AutoCreateDbTable autoCreateDbTable) {
+        this.autoCreateDbTable = autoCreateDbTable;
+    }
+
     public ApiExceptionHandler getApiExceptionHandler() {
         return apiExceptionHandler;
     }
@@ -848,5 +858,75 @@ public class ItsuSiteConfigProperties {
         public void setEnable(boolean enable) {
             this.enable = enable;
         }
+    }
+
+    public static class AutoCreateDbTable {
+        private boolean enable = true;
+
+        private Type type = Type.CREATE;//create未有表时创建；update未有表时创建，有表时删除原来的表和数据重新创建
+
+        private boolean initData = true;
+
+
+        /**
+         * get field
+         *
+         * @return initData
+         */
+        public boolean isInitData() {
+            return this.initData;
+        }
+
+        /**
+         * set field
+         *
+         * @param initData
+         */
+        public void setInitData(boolean initData) {
+            this.initData = initData;
+        }
+
+        /**
+         * get field
+         *
+         * @return type
+         */
+        public Type getType() {
+            return this.type;
+        }
+
+        /**
+         * set field
+         *
+         * @param type
+         */
+        public void setType(Type type) {
+            this.type = type;
+        }
+
+
+        public enum Type {
+            CREATE, UPDATE
+        }
+
+        /**
+         * get field
+         *
+         * @return enable
+         */
+        public boolean isEnable() {
+            return this.enable;
+        }
+
+        /**
+         * set field
+         *
+         * @param enable
+         */
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+
     }
 }
