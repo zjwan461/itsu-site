@@ -45,6 +45,10 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 itsu:
   site:
+    auto-create-db-table:
+      enable: true
+      type: update
+      init-data: false
     api-exception-handler:
       enable: true
     mapper-cache:

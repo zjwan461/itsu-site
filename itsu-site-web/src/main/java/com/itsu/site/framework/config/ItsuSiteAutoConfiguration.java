@@ -13,6 +13,7 @@ import com.itsu.core.component.mvc.CorsFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.validate.RequestParamValidate;
+import com.itsu.core.exception.InitialException;
 import com.itsu.core.util.ClassPathResourceUtil;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.SystemUtil;
@@ -40,6 +41,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Jerry Su
@@ -163,31 +165,47 @@ public class ItsuSiteAutoConfiguration {
             @Autowired
             private JdbcTemplate jdbcTemplate;
 
+            public void execute(String classpath) throws IOException {
+                try {
+                    File file = ClassPathResourceUtil.getFile(classpath);
+                    String content = FileUtil.readString(file, "UTF-8");
+                    if (StrUtil.isBlank(content)) {
+                        logger.warn("empty content for create.sql, will skip auto create/update table");
+                    } else {
+                        String[] sqls = StrUtil.split(content, ";");
+                        for (String sql : sqls) {
+                            try {
+                                if (StrUtil.isNotBlank(sql))
+                                    jdbcTemplate.execute(sql);
+                            } catch (DataAccessException e) {
+                                logger.warn("error execute sql:[{}], error message:[{}]", sql, e.getMessage());
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    logger.warn("auto create table contains errors", e);
+                    throw e;
+                }
+            }
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
                 if (!itsuSiteConfigProperties.getAutoCreateDbTable().isEnable()) {
                     logger.info("auto create table is set to false");
                 } else {
-                    try {
-                        File file = ClassPathResourceUtil.getFile("classpath:schema/init.sql");
-                        String content = FileUtil.readString(file, "UTF-8");
-                        if (StrUtil.isBlank(content)) {
-                            logger.warn("empty content for init.sql, will skip auto create table");
-                            return;
-                        } else {
-                            String[] sqls = StrUtil.split(content, ";");
-                            for (String sql : sqls) {
-                                try {
-                                    jdbcTemplate.execute(sql);
-                                } catch (DataAccessException e) {
-                                    logger.warn("error execute sql:[{}], error message:[{}]", sql, e.getMessage());
-                                }
-                            }
-                        }
+                    ItsuSiteConfigProperties.AutoCreateDbTable.Type type = itsuSiteConfigProperties.getAutoCreateDbTable().getType();
+                    if (type == ItsuSiteConfigProperties.AutoCreateDbTable.Type.CREATE) {
+                        execute("classpath:schema/create.sql");
+                    } else if (type == ItsuSiteConfigProperties.AutoCreateDbTable.Type.UPDATE) {
+                        execute("classpath:schema/drop.sql");
+                        execute("classpath:schema/create.sql");
+                    } else {
+                        throw new InitialException("not supported auto create type [" + type.name() + "]");
+                    }
 
-                    } catch (Exception e) {
-                        logger.warn("auto create table contains errors", e);
-                        throw e;
+                    if (itsuSiteConfigProperties.getAutoCreateDbTable().isInitData()) {
+                        execute("classpath:schema/init-data.sql");
                     }
                 }
                 logger.info("itsu-site application:{} is started at {}", SystemUtil.getProjectName(), DateUtil.now());

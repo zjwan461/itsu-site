@@ -12,10 +12,10 @@ spring:
         max-idle: 20
         min-idle: 0
   datasource:
-    url: jdbc:mysql://192.168.31.6:3310/itsu-site?useSSL=false&characterEncoding=utf8&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/itsu-site?useSSL=false&characterEncoding=utf8&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: password
+    password: 123456
     hikari:
       minimum-idle: 5
       idle-timeout: 180000
@@ -32,6 +32,5 @@ itsu:
       enable: true
       generate-html-path: D:/
     allow-origins: all
-    upload-html-script: D:/upload-static-html-dev.bat
     security-config:
       cache-expire: 28800
