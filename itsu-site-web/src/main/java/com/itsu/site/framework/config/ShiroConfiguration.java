@@ -9,13 +9,17 @@ package com.itsu.site.framework.config;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.shiro.AuthenRealmBase;
 import com.itsu.core.shiro.JwtTokenFilter;
+import com.itsu.core.shiro.StatelessDefaultSubjectFactory;
 import com.itsu.site.framework.shiro.filter.ItsuSiteApiJwtTokenFilter;
 import com.itsu.site.framework.shiro.realm.AuthenRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.mgt.*;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -24,6 +28,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -53,6 +58,18 @@ public class ShiroConfiguration {
 
     @Resource
     private JwtTokenFilter jwtTokenFilter;
+
+    /**
+     * 开启注解权限角色控制
+     *
+     * @return
+     */
+    @Bean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator kolApp = new DefaultAdvisorAutoProxyCreator();
+        kolApp.setProxyTargetClass(true);
+        return kolApp;
+    }
 
     /**
      * http请求路劲对应shiro filter配置
@@ -102,18 +119,55 @@ public class ShiroConfiguration {
     }
 
     /**
+     * 自定义无状态subjectFactory
+     *
+     * @return
+     */
+    @Bean
+    public DefaultSubjectFactory subjectFactory() {
+        return new StatelessDefaultSubjectFactory();
+    }
+
+    /**
+     * 不校验session
+     *
+     * @return
+     */
+    @Bean
+    public SessionManager sessionManager() {
+        DefaultSessionManager shiroSessionManager = new DefaultSessionManager();
+        // 关闭session校验轮询
+        shiroSessionManager.setSessionValidationSchedulerEnabled(false);
+        return shiroSessionManager;
+    }
+
+    /**
      * 定义securitymanager，指定认证realm； 指定缓存管理器为redis
      *
      * @return
      */
     @Bean
     @ConditionalOnMissingBean(SessionsSecurityManager.class)
-    public SessionsSecurityManager securityManager(RedisCacheManager redisCacheManager) {
+    public SecurityManager securityManager(RedisCacheManager redisCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         ThreadContext.bind(securityManager);
         securityManager.setRealms(Arrays.asList(this.authenRealm));
         securityManager.setCacheManager(redisCacheManager);
         return securityManager;
+    }
+
+    /**
+     * 自定义subjectDao不存储session
+     *
+     * @return
+     */
+    @Bean
+    public SubjectDAO subjectDAO() {
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        sessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(sessionStorageEvaluator);
+        return subjectDAO;
     }
 
     /**
@@ -193,6 +247,16 @@ public class ShiroConfiguration {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;
+    }
+
+    /**
+     * 开启shiro生命周期
+     *
+     * @return
+     */
+    @Bean
+    public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
     }
 
 }

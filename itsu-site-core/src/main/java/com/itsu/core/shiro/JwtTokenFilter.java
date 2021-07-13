@@ -3,6 +3,7 @@ package com.itsu.core.shiro;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itsu.core.component.cache.ThreadCache;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.security.AccessStrategy;
 import com.itsu.core.component.security.StrategyEnum;
@@ -64,6 +65,8 @@ public abstract class JwtTokenFilter extends AccessControlFilter {
                     try {
                         JWTUtil.verify(accessToken, user.getSecurityKey());
                         verify = true;
+                        // 将用户名存入线程变量中
+                        ThreadCache.saveString(username);
                     } catch (Exception e) {
                         log.info("bad accessToken for {} ", WebUtils.toHttp(request).getRequestURI());
                     }
