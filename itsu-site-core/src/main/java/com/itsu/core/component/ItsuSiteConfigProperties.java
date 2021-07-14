@@ -1,7 +1,9 @@
 package com.itsu.core.component;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -18,15 +20,15 @@ public class ItsuSiteConfigProperties {
 
     private MapperCache mapperCache = new MapperCache();
 
-    private String name;
+    private String name = "Itsu-Site-Application";
 
-    private String domain;
+    private String domain = "localhost";
 
     private String env = "prd";
 
     private String aesKey;
 
-    private Mask mask;
+    private Mask mask = new Mask();
 
     private AccessToken accessToken = new AccessToken();
 
@@ -38,12 +40,6 @@ public class ItsuSiteConfigProperties {
 
     private AntiCrawler antiCrawler = new AntiCrawler();
 
-    private String disableEmailSuffix;
-
-    private String frontUrlPrefix;
-
-    private String[] allowOrigins;
-
     private GenerateHtml generateHtml = new GenerateHtml();
 
     private ScriptProcess scriptProcess = new ScriptProcess();
@@ -51,6 +47,26 @@ public class ItsuSiteConfigProperties {
     private String customErrorProperties;
 
     private AutoCreateDbTable autoCreateDbTable = new AutoCreateDbTable();
+
+    private Pagination pagination = new Pagination();
+
+    private CrossOrigin crossOrigin = new CrossOrigin();
+
+    public CrossOrigin getCrossOrigin() {
+        return crossOrigin;
+    }
+
+    public void setCrossOrigin(CrossOrigin crossOrigin) {
+        this.crossOrigin = crossOrigin;
+    }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
 
     public AutoCreateDbTable getAutoCreateDbTable() {
         return autoCreateDbTable;
@@ -235,34 +251,6 @@ public class ItsuSiteConfigProperties {
     }
 
     /**
-     * @return the disableEmailSuffix
-     */
-    public String getDisableEmailSuffix() {
-        return disableEmailSuffix;
-    }
-
-    /**
-     * @param disableEmailSuffix the disableEmailSuffix to set
-     */
-    public void setDisableEmailSuffix(String disableEmailSuffix) {
-        this.disableEmailSuffix = disableEmailSuffix;
-    }
-
-    /**
-     * @return the frontUrlPrefix
-     */
-    public String getFrontUrlPrefix() {
-        return frontUrlPrefix;
-    }
-
-    /**
-     * @param frontUrlPrefix the frontUrlPrefix to set
-     */
-    public void setFrontUrlPrefix(String frontUrlPrefix) {
-        this.frontUrlPrefix = frontUrlPrefix;
-    }
-
-    /**
      * @return the domain
      */
     public String getDomain() {
@@ -276,22 +264,6 @@ public class ItsuSiteConfigProperties {
         this.domain = domain;
     }
 
-    /**
-     * @return the allowOrigins
-     */
-    public String[] getAllowOrigins() {
-        return allowOrigins;
-    }
-
-    /**
-     * @param allowOrigins the allowOrigins to set
-     */
-    public void setAllowOrigins(String[] allowOrigins) {
-        if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
-            this.allowOrigins = new String[]{"*"};
-        else
-            this.allowOrigins = allowOrigins;
-    }
 
     public static class Mask {
         private boolean log;
@@ -512,9 +484,9 @@ public class ItsuSiteConfigProperties {
 
     public static class GlobalParamCheck {
 
-        private boolean enable = true;
+        private boolean enable = false;
 
-        private String[] regExs;
+        private String[] regExs = {".*[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\\\\\]+.*"};
 
         /**
          * @return the enable
@@ -547,7 +519,7 @@ public class ItsuSiteConfigProperties {
     }
 
     public static class AntiCrawler {
-        private boolean enable = true;
+        private boolean enable = false;
 
         private List<String> illegalUserAgents;
 
@@ -778,7 +750,7 @@ public class ItsuSiteConfigProperties {
     public static class GenerateHtml {
 
         private static final String DEFAULT_GENERATE_HTML_PATH = "/usr/local/itsu-site";
-        private boolean enable = true;
+        private boolean enable = false;
         private String generateHtmlPath = DEFAULT_GENERATE_HTML_PATH;
 
         public String getGenerateHtmlPath() {
@@ -861,7 +833,7 @@ public class ItsuSiteConfigProperties {
     }
 
     public static class AutoCreateDbTable {
-        private boolean enable = true;
+        private boolean enable = false;
 
         private Type type = Type.CREATE;//create未有表时创建；update未有表时创建，有表时删除原来的表和数据重新创建
 
@@ -927,6 +899,86 @@ public class ItsuSiteConfigProperties {
             this.enable = enable;
         }
 
+    }
 
+    public class Pagination {
+        private boolean overflow = false;
+        private Long maxLimit = 500L;
+        private DbType dbType = DbType.MYSQL;
+
+        public DbType getDbType() {
+            return dbType;
+        }
+
+        public void setDbType(DbType dbType) {
+            this.dbType = dbType;
+        }
+
+        public boolean isOverflow() {
+            return overflow;
+        }
+
+        public void setOverflow(boolean overflow) {
+            this.overflow = overflow;
+        }
+
+        public Long getMaxLimit() {
+            return maxLimit;
+        }
+
+        public void setMaxLimit(Long maxLimit) {
+            this.maxLimit = maxLimit;
+        }
+    }
+
+    public static class CrossOrigin {
+        private String[] allowOrigins = {"all"};
+
+        private String[] allowMethods = {"GET", "PUT", "POST", "DELETE"};
+
+        private Integer maxAge = 3600;
+
+        private String[] allowHeaders = {"x-requested-with", "accesstoken"};
+
+        public Integer getMaxAge() {
+            return maxAge;
+        }
+
+        public void setMaxAge(Integer maxAge) {
+            this.maxAge = maxAge;
+        }
+
+        public String[] getAllowHeaders() {
+            return allowHeaders;
+        }
+
+        public void setAllowHeaders(String[] allowHeaders) {
+            this.allowHeaders = allowHeaders;
+        }
+
+        public String[] getAllowMethods() {
+            return allowMethods;
+        }
+
+        public void setAllowMethods(String[] allowMethods) {
+            this.allowMethods = allowMethods;
+        }
+
+        /**
+         * @return the allowOrigins
+         */
+        public String[] getAllowOrigins() {
+            return allowOrigins;
+        }
+
+        /**
+         * @param allowOrigins the allowOrigins to set
+         */
+        public void setAllowOrigins(String[] allowOrigins) {
+            if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
+                this.allowOrigins = new String[]{"*"};
+            else
+                this.allowOrigins = allowOrigins;
+        }
     }
 }

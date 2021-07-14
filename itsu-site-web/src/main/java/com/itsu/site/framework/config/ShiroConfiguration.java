@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+//TODO 缺一個memory cache
 @Configuration
 @AutoConfigureAfter(RedisConfiguration.class)
 public class ShiroConfiguration {

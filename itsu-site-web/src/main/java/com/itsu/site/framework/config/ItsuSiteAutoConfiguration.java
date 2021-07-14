@@ -2,25 +2,32 @@ package com.itsu.site.framework.config;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.json.JSONUtil;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
-import com.itsu.core.component.mvc.CorsFilter;
+import com.itsu.core.component.mvc.CrossOriginFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
-import com.itsu.core.component.validate.RequestParamValidate;
+import com.itsu.core.component.validate.GlobalRequestParamValidate;
 import com.itsu.core.exception.InitialException;
 import com.itsu.core.util.ClassPathResourceUtil;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.sys.ErrorProperties;
+import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.component.GenerateHtml;
 import com.itsu.site.framework.component.RefreshTokenAspectAdaptor;
 import com.itsu.site.framework.component.ScriptProcess;
+import com.itsu.site.framework.config.annotation.enable.EnableApiExceptionHandler;
+import com.itsu.site.framework.config.annotation.enable.EnableGlobalParamCheck;
+import com.itsu.site.framework.config.annotation.enable.EnableRefreshToken;
 import com.itsu.site.framework.controller.AccountLoginController;
 import com.itsu.site.framework.controller.FilterErrorController;
 import com.itsu.site.framework.controller.handler.ApiExceptionHandler;
@@ -65,6 +72,11 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
+    public TransferSiteConfigProperties siteConfig() {
+        return new TransferSiteConfigProperties(itsuSiteConfigProperties);
+    }
+
+    @Bean
     @ConditionalOnMissingBean(SpringUtil.class)
     public SpringUtil springUtil() {
         return new SpringUtil();
@@ -78,7 +90,7 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true")
     @ConditionalOnMissingBean(RefreshTokenAspect.class)
     public RefreshTokenAspect refreshTokenAspect() {
         return new RefreshTokenAspectAdaptor();
@@ -94,9 +106,9 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "itsu.site.global-param-check.enable", havingValue = "true")
-    @ConditionalOnMissingBean(RequestParamValidate.class)
-    public RequestParamValidate requestParamValidate() {
-        return new RequestParamValidate();
+    @ConditionalOnMissingBean(GlobalRequestParamValidate.class)
+    public GlobalRequestParamValidate globalRequestParamValidate() {
+        return new GlobalRequestParamValidate();
     }
 
     @Bean
@@ -119,9 +131,9 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(CorsFilter.class)
-    public CorsFilter corsFilter() {
-        return new CorsFilter();
+    @ConditionalOnMissingBean(CrossOriginFilter.class)
+    public CrossOriginFilter crossOriginFilter() {
+        return new CrossOriginFilter(itsuSiteConfigProperties);
     }
 
     @Bean
@@ -191,6 +203,46 @@ public class ItsuSiteAutoConfiguration {
 
             @Override
             public void run(ApplicationArguments args) throws Exception {
+                prepareSiteConfig();
+                autoCreateTable();
+                logger.info("itsu-site application:{} is started at {}", SystemUtil.getProjectName(), DateUtil.now());
+            }
+
+            public void prepareSiteConfig() {
+                // @Enable注解修改的siteConfig属性重新写入siteConfig对象，并重入IOC中
+                Class<?> starterClass = SystemUtil.getStarterClassBean().getClass();
+                EnableApiExceptionHandler eaeh = starterClass.getAnnotation(EnableApiExceptionHandler.class);
+                if (!itsuSiteConfigProperties.getApiExceptionHandler().isEnable()) {
+                    if (eaeh != null) {
+                        itsuSiteConfigProperties.getApiExceptionHandler().setEnable(true);
+                    }
+                }
+                EnableGlobalParamCheck egpc = starterClass.getAnnotation(EnableGlobalParamCheck.class);
+                if (!itsuSiteConfigProperties.getGlobalParamCheck().isEnable()) {
+                    if (egpc != null) {
+                        itsuSiteConfigProperties.getGlobalParamCheck().setEnable(true);
+                        if (ArrayUtil.isNotEmpty(egpc.regExs())) {
+                            itsuSiteConfigProperties.getGlobalParamCheck().setRegExs(egpc.regExs());
+                        }
+                    }
+                }
+
+                EnableRefreshToken ert = starterClass.getAnnotation(EnableRefreshToken.class);
+                if (!itsuSiteConfigProperties.getAccessToken().isDynamic()) {
+                    if (ert != null) {
+                        itsuSiteConfigProperties.getAccessToken().setDynamic(true);
+                        if (ert.type() == RefreshTokenType.MEMORY) {
+                            itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.MEMORY);
+                        } else if (ert.type() == RefreshTokenType.REDIS) {
+                            itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.REDIS);
+                        }
+                    }
+                }
+
+                System.out.println(JSONUtil.toJsonPrettyStr(itsuSiteConfigProperties));
+            }
+
+            public void autoCreateTable() throws Exception {
                 if (!itsuSiteConfigProperties.getAutoCreateDbTable().isEnable()) {
                     logger.info("auto create table is set to false");
                 } else {
@@ -208,7 +260,6 @@ public class ItsuSiteAutoConfiguration {
                         execute("classpath:schema/init-data.sql");
                     }
                 }
-                logger.info("itsu-site application:{} is started at {}", SystemUtil.getProjectName(), DateUtil.now());
             }
         };
     }

@@ -43,39 +43,44 @@ mybatis-plus:
   configuration:
     cache-enabled: true
     map-underscore-to-camel-case: true
-itsu:
-  site:
-    auto-create-db-table:
-      enable: true
-      type: update
-      init-data: false
-    api-exception-handler:
-      enable: true
-    mapper-cache:
-      cache-type: memory
-      cache-time: 30
-      cache-prefix: mybatis:cache
-    custom-error-properties: classpath:code.properties
-    env: ${spring.profiles.active}
-    global-param-check:
-      enable: true
-      reg-exs:
-        - .*[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\]+.*
-    security-config:
-      login-url: /login
-      logout-url: /
-      hash-algorithm-name: MD5
-      hash-iterations: 10
-      authentication-cache-name: ${itsu.site.name}-authen
-      authorization-cache-name: ${itsu.site.name}-author
-      cache-expire: 3600
-    login-aes-encrypt: true
-    name: site-demo
-    aes-key: 100534895465610L
-    mask:
-      log: true
-      resp: false
-    access-token:
-      dynamic: true
-      type: memory
-      expire: 8h
+#itsu:
+#  site:
+#    security-config:
+#      login-url: /login
+#      logout-url: /
+#itsu:
+#  site:
+#    auto-create-db-table:
+#      enable: true
+#      type: update
+#      init-data: false
+#    api-exception-handler:
+#      enable: true
+#    mapper-cache:
+#      cache-type: memory
+#      cache-time: 30
+#      cache-prefix: mybatis:cache
+#    custom-error-properties: classpath:code.properties
+#    env: ${spring.profiles.active}
+#    global-param-check:
+#      enable: true
+#      reg-exs:
+#        - .*[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\]+.*
+#    security-config:
+#      login-url: /login
+#      logout-url: /
+#      hash-algorithm-name: MD5
+#      hash-iterations: 10
+#      authentication-cache-name: ${itsu.site.name}-authen
+#      authorization-cache-name: ${itsu.site.name}-author
+#      cache-expire: 3600
+#    login-aes-encrypt: true
+#    name: site-demo
+#    aes-key: 100534895465610L
+#    mask:
+#      log: true
+#      resp: false
+#    access-token:
+#      dynamic: true
+#      type: memory
+#      expire: 8h

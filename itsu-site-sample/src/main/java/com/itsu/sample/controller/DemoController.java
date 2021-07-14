@@ -1,6 +1,9 @@
 package com.itsu.sample.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.security.AccessStrategy;
 import com.itsu.core.component.security.StrategyEnum;
@@ -12,6 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author Jerry Su
@@ -52,5 +56,13 @@ public class DemoController {
     @GetMapping("/listBean")
     public String[] listBean() {
         return SpringUtil.getApplicationContext().getBeanDefinitionNames();
+    }
+
+    @GetMapping("/config")
+    public Map<String,Object> getConfig() {
+        ItsuSiteConfigProperties siteConfig = SpringUtil.getBean(ItsuSiteConfigProperties.class);
+        Map<String, Object> map = BeanUtil.beanToMap(siteConfig);
+        map.putAll(BeanUtil.beanToMap(SpringUtil.getBean(TransferSiteConfigProperties.class)));
+        return map;
     }
 }

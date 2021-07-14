@@ -1,6 +1,6 @@
 package com.itsu.site.framework.config.importselector;
 
-import com.itsu.core.component.validate.RequestParamValidate;
+import com.itsu.core.component.validate.GlobalRequestParamValidate;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -11,6 +11,6 @@ import org.springframework.core.type.AnnotationMetadata;
 public class GlobalParamCheckImportSelector implements ImportSelector {
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-        return new String[]{RequestParamValidate.class.getName()};
+        return new String[]{GlobalRequestParamValidate.class.getName()};
     }
 }

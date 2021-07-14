@@ -1,4 +1,4 @@
-package com.itsu.site.framework.config.annotation;
+package com.itsu.site.framework.config.annotation.enable;
 
 import com.itsu.site.framework.config.importselector.ApiExceptionHandlerImportSelector;
 import org.springframework.context.annotation.Import;

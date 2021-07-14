@@ -7,15 +7,13 @@
 package com.itsu.site.framework.controller.handler;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.dytoken.RefreshToken;
-import com.itsu.core.exception.DynamicTokenException;
 import com.itsu.core.exception.CodeAbleException;
+import com.itsu.core.exception.DynamicTokenException;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
-import com.itsu.core.vo.sys.ErrorProperties;
 import com.itsu.core.vo.sys.CodeConstant;
-import com.itsu.site.framework.mapper.AccountMapper;
+import com.itsu.core.vo.sys.ErrorProperties;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
@@ -42,15 +40,6 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
 
     @Resource
     private ErrorProperties prop;
-
-    @Resource
-    private ItsuSiteConfigProperties configProperties;
-
-    @Resource
-    private AccountMapper accountMapper;
-
-    @Resource(name = "jsonRedisTemplate")
-    private RedisTemplate redisTemplate;
 
     /**
      * 自定义 动态token异常

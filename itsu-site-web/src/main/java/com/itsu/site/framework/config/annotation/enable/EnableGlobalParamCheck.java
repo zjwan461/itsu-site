@@ -1,4 +1,4 @@
-package com.itsu.site.framework.config.annotation;
+package com.itsu.site.framework.config.annotation.enable;
 
 import com.itsu.site.framework.config.importselector.GlobalParamCheckImportSelector;
 import org.springframework.context.annotation.Import;
@@ -14,4 +14,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Import(GlobalParamCheckImportSelector.class)
 public @interface EnableGlobalParamCheck {
+
+    String[] regExs() default {".*[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\\\\\]+.*"};
 }

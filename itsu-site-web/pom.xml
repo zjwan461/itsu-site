@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.itsu</groupId>
         <artifactId>itsu-site</artifactId>
-        <version>1.0</version>
+        <version>1.0.0.RELEASE</version>
     </parent>
     <artifactId>itsu-site-web</artifactId>
     <properties>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.itsu</groupId>
             <artifactId>itsu-site-core</artifactId>
-            <version>1.0</version>
+            <version>1.0.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>

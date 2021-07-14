@@ -6,10 +6,12 @@
  */
 package com.itsu.core.util;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.vo.io.req.ReqObjBase;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -210,5 +212,12 @@ public final class SystemUtil {
 
     public static String getMapperCachePrefix() {
         return getItsuSiteConfigProperties().getMapperCache().getCachePrefix();
+    }
+
+    public static Object getStarterClassBean() {
+        String[] beanNamesForAnnotation = SpringUtil.getApplicationContext().getBeanNamesForAnnotation(SpringBootApplication.class);
+        String beanName = ArrayUtil.isNotEmpty(beanNamesForAnnotation) ? beanNamesForAnnotation[0] : null;
+        assert beanName != null;
+        return  SpringUtil.getBean(beanName);
     }
 }

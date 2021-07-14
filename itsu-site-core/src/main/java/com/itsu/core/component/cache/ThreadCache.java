@@ -2,6 +2,10 @@ package com.itsu.core.component.cache;
 
 import java.util.HashMap;
 
+/**
+ * @author Jerry.Su
+ * @Date 2021/7/14
+ */
 public class ThreadCache {
 
     private static final ThreadLocal<String> STRING_THREAD_CACHE = ThreadLocal.withInitial(() -> "");

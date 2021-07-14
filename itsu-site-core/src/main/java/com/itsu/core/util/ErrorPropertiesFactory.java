@@ -1,6 +1,5 @@
 package com.itsu.core.util;
 
-import cn.hutool.core.io.resource.NoResourceException;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.itsu.core.vo.sys.ErrorProperties;
 import org.slf4j.Logger;
@@ -38,8 +37,8 @@ public class ErrorPropertiesFactory {
         InputStream stream = null;
         try {
             stream = ResourceUtil.getStream(SystemUtil.getCustomErrorPropertiesPath());
-        } catch (NoResourceException e) {
-            logger.info("custom not provide a ErrorProperties");
+        } catch (Exception e) {
+            logger.warn("can not load custom ErrorProperties, you should provide one");
         }
         if (stream != null)
             prop.load(stream);

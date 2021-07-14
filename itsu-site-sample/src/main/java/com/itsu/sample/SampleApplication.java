@@ -1,9 +1,9 @@
 package com.itsu.sample;
 
 import com.itsu.core.vo.sys.RefreshTokenType;
-import com.itsu.site.framework.config.annotation.EnableApiExceptionHandler;
-import com.itsu.site.framework.config.annotation.EnableGlobalParamCheck;
-import com.itsu.site.framework.config.annotation.EnableRefreshToken;
+import com.itsu.site.framework.config.annotation.enable.EnableApiExceptionHandler;
+import com.itsu.site.framework.config.annotation.enable.EnableGlobalParamCheck;
+import com.itsu.site.framework.config.annotation.enable.EnableRefreshToken;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

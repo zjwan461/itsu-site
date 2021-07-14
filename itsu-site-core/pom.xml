@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.itsu</groupId>
 		<artifactId>itsu-site</artifactId>
-		<version>1.0</version>
+		<version>1.0.0.RELEASE</version>
 	</parent>
 	<artifactId>itsu-site-core</artifactId>
 	<properties>

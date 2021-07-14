@@ -10,8 +10,8 @@ import com.itsu.core.vo.io.req.LoginReqVo;
  */
 public interface AccountService {
 
-	public JsonResult login(LoginReqVo loginReqVo) throws CodeAbleException;
+    JsonResult login(LoginReqVo loginReqVo) throws CodeAbleException;
 
-	public JsonResult logout() throws CodeAbleException;
+    JsonResult logout() throws CodeAbleException;
 
 }

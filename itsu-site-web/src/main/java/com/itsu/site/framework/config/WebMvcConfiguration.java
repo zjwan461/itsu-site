@@ -7,7 +7,7 @@
 package com.itsu.site.framework.config;
 
 import com.itsu.core.component.*;
-import com.itsu.core.component.mvc.CorsFilter;
+import com.itsu.core.component.mvc.CrossOriginFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.MaskJackson2HttpMessageConverter;
 import com.itsu.core.component.mvc.RequestInterceptor;
@@ -65,17 +65,29 @@ public class WebMvcConfiguration {
         };
     }
 
+    /**
+     * 添加跨域Filter
+     *
+     * @param crossOriginFilter
+     * @return
+     */
     @Bean
-    @ConditionalOnBean(CorsFilter.class)
-    public FilterRegistrationBean<CorsFilter> registerLoginCheckFilter(CorsFilter corsFilter) {
-        FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(corsFilter);
+    @ConditionalOnBean(CrossOriginFilter.class)
+    public FilterRegistrationBean<CrossOriginFilter> registerCrossOriginFilter(CrossOriginFilter crossOriginFilter) {
+        FilterRegistrationBean<CrossOriginFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(crossOriginFilter);
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setName("CorsFilter");
+        registrationBean.setName("CrossOriginFilter");
         registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
         return registrationBean;
     }
 
+    /**
+     * 添加Filter异常拦截Filter
+     *
+     * @param filter
+     * @return
+     */
     @Bean
     public FilterRegistrationBean<ExceptionThrowFilter> registerFilterExceptionFilter(ExceptionThrowFilter filter) {
         FilterRegistrationBean<ExceptionThrowFilter> registrationBean = new FilterRegistrationBean<>();

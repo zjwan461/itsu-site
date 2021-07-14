@@ -23,9 +23,9 @@ import javax.annotation.Resource;
 
 @Aspect
 @Order(1)
-public class RequestParamValidate {
+public class GlobalRequestParamValidate {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestParamValidate.class);
+    private static final Logger log = LoggerFactory.getLogger(GlobalRequestParamValidate.class);
 
     @Resource
     private ItsuSiteConfigProperties kProperties;
