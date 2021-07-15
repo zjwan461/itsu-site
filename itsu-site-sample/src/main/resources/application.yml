@@ -43,11 +43,11 @@ mybatis-plus:
   configuration:
     cache-enabled: true
     map-underscore-to-camel-case: true
-#itsu:
-#  site:
-#    security-config:
-#      login-url: /login
-#      logout-url: /
+itsu:
+  site:
+    security-config:
+      login-url: /login-in
+      logout-url: /
 #itsu:
 #  site:
 #    auto-create-db-table:

@@ -13,4 +13,13 @@ public class ErrorProperties extends Properties {
         return (String) super.getProperty(String.valueOf(errorCode));
     }
 
+    private boolean enable = true;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

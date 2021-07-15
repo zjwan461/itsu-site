@@ -9,7 +9,10 @@ package com.itsu.site.framework.config;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.shiro.AuthenRealmBase;
 import com.itsu.core.shiro.JwtTokenFilter;
+import com.itsu.core.shiro.MemoryCacheManager;
 import com.itsu.core.shiro.StatelessDefaultSubjectFactory;
+import com.itsu.site.framework.config.annotation.condition.ConditionalOnShiroCacheMemory;
+import com.itsu.site.framework.config.annotation.condition.ConditionalOnShiroCacheRedis;
 import com.itsu.site.framework.shiro.filter.ItsuSiteApiJwtTokenFilter;
 import com.itsu.site.framework.shiro.realm.AuthenRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -29,12 +32,15 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.Resource;
@@ -42,11 +48,15 @@ import javax.servlet.Filter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 //TODO 缺一個memory cache
 @Configuration
 @AutoConfigureAfter(RedisConfiguration.class)
 public class ShiroConfiguration {
+
+    @Value("${spring.application.name")
+    private String applicationName;
 
     @Resource
     private ItsuSiteConfigProperties kProperties;
@@ -180,12 +190,14 @@ public class ShiroConfiguration {
     @ConditionalOnMissingBean(AuthenRealmBase.class)
     public AuthenRealmBase authenRealm() {
         AuthenRealm authenRealm = new AuthenRealm();
-        authenRealm.setName("siteAuthenRealm");
-        authenRealm.setAuthenticationCacheName(kProperties.getSecurityConfig().getAuthenticationCacheName());
-        authenRealm.setAuthorizationCacheName(kProperties.getSecurityConfig().getAuthorizationCacheName());
-        authenRealm.setCachingEnabled(true);
-        authenRealm.setAuthorizationCachingEnabled(true);
-        authenRealm.setAuthenticationCachingEnabled(true);
+        authenRealm.setName(applicationName + "-realm");
+        if (kProperties.getSecurityConfig().isCacheEnable()) {
+            authenRealm.setAuthenticationCacheName(kProperties.getSecurityConfig().getAuthenticationCacheName());
+            authenRealm.setAuthorizationCacheName(kProperties.getSecurityConfig().getAuthorizationCacheName());
+            authenRealm.setCachingEnabled(true);
+            authenRealm.setAuthorizationCachingEnabled(true);
+            authenRealm.setAuthenticationCachingEnabled(true);
+        }
         authenRealm.setCredentialsMatcher(this.credentialsMatcher);
         return authenRealm;
     }
@@ -211,6 +223,7 @@ public class ShiroConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(CacheManager.class)
+    @ConditionalOnShiroCacheRedis
     public RedisCacheManager redisCacheManager(RedisManager redisManager) {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager);
@@ -228,6 +241,7 @@ public class ShiroConfiguration {
     @Bean
     @ConditionalOnBean(RedisCacheManager.class)
     @ConditionalOnMissingBean(RedisManager.class)
+//    @ConditionalOnShiroCacheRedis
     public RedisManager redisManager(JedisPoolConfig jedisPoolConfig, RedisProperties redisProperties) {
         RedisManager redisManager = new RedisManager();
         redisManager.setJedisPoolConfig(jedisPoolConfig);
@@ -235,6 +249,20 @@ public class ShiroConfiguration {
         redisManager.setPassword(redisProperties.getPassword());
         redisManager.setDatabase(redisProperties.getDatabase());
         return redisManager;
+    }
+
+    /**
+     * 本地内存缓存
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(CacheManager.class)
+//    @ConditionalOnShiroCacheMemory
+    public MemoryCacheManager memoryCacheManager() {
+        MemoryCacheManager memoryCacheManager = new MemoryCacheManager();
+        memoryCacheManager.setExpire(TimeUnit.SECONDS.toMillis(kProperties.getSecurityConfig().getCacheExpire()));
+        return memoryCacheManager;
     }
 
     /**

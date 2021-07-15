@@ -34,7 +34,7 @@ public class AccountLoginController implements BaseController {
      * @throws CodeAbleException
      */
 //    @PostMapping("${itsu.site.security-config.login-url}")
-    @PostMapping("#{siteConfig.properties.securityConfig.loginUrl}")
+    @PostMapping("#{siteConfig.config.securityConfig.loginUrl}")
     @SkipValidate
     public JsonResult login(@RequestBody @Validated LoginReqVo user) throws CodeAbleException {
         return accountService.login(user);
@@ -47,7 +47,7 @@ public class AccountLoginController implements BaseController {
      * @throws CodeAbleException
      */
 //    @GetMapping("${itsu.site.security-config.logout-url}")
-    @GetMapping("#{siteConfig.properties.securityConfig.logoutUrl}")
+    @GetMapping("#{siteConfig.config.securityConfig.logoutUrl}")
     public JsonResult logout(HttpServletRequest request, HttpServletResponse response) throws CodeAbleException {
         return accountService.logout();
     }

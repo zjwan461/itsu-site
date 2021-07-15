@@ -25,6 +25,15 @@ import java.util.Map;
 @RequestMapping("/api")
 @AccessStrategy(StrategyEnum.ANY)
 public class DemoController {
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    private boolean enable = true;
 
     @Resource
     private TestMapper mapper;
@@ -59,7 +68,7 @@ public class DemoController {
     }
 
     @GetMapping("/config")
-    public Map<String,Object> getConfig() {
+    public Map<String, Object> getConfig() {
         ItsuSiteConfigProperties siteConfig = SpringUtil.getBean(ItsuSiteConfigProperties.class);
         Map<String, Object> map = BeanUtil.beanToMap(siteConfig);
         map.putAll(BeanUtil.beanToMap(SpringUtil.getBean(TransferSiteConfigProperties.class)));

@@ -1,5 +1,7 @@
 package com.itsu.core.component;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * @author Jerry.Su
  * @Date 2021/7/14 14:24
@@ -7,13 +9,14 @@ package com.itsu.core.component;
  */
 public class TransferSiteConfigProperties {
 
-    private final ItsuSiteConfigProperties properties;
+    @Autowired
+    private ItsuSiteConfigProperties config;
 
-    public TransferSiteConfigProperties(ItsuSiteConfigProperties properties) {
-        this.properties = properties;
+    public ItsuSiteConfigProperties getConfig() {
+        return config;
     }
 
-    public ItsuSiteConfigProperties getProperties() {
-        return properties;
+    public void setConfig(ItsuSiteConfigProperties config) {
+        this.config = config;
     }
 }

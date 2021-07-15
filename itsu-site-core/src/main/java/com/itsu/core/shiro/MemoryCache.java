@@ -1,56 +1,64 @@
 package com.itsu.core.shiro;
 
-import cn.hutool.cache.impl.TimedCache;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Jerry.Su
  * @Date 2021/7/14 17:34
  */
-public class MemoryCache<K,V> implements Cache<K,V> {
+public class MemoryCache<K, V> implements Cache<K, V> {
 
-    private volatile TimedCache<K, V> timedCache = null;
+    private volatile SiteTimedCache<K, V> timedCache = null;
 
-    public MemoryCache(TimedCache<K, V> timedCache) {
+    public MemoryCache(SiteTimedCache<K, V> timedCache) {
         this.timedCache = timedCache;
     }
 
     @Override
     public V get(K k) throws CacheException {
-        return null;
+        return timedCache.get(k);
     }
 
     @Override
     public V put(K k, V v) throws CacheException {
-        return null;
+        timedCache.put(k, v);
+        return v;
     }
 
     @Override
     public V remove(K k) throws CacheException {
-        return null;
+        V v = get(k);
+        timedCache.remove(k);
+        return v;
     }
 
     @Override
     public void clear() throws CacheException {
-
+        timedCache.clear();
     }
 
     @Override
     public int size() {
-        return 0;
+        return timedCache.size();
     }
 
     @Override
     public Set<K> keys() {
-        return null;
+        return timedCache.getKeys();
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        List<V> list = new ArrayList<>();
+        timedCache.forEach(v -> {
+            list.add(v);
+        });
+        return list;
     }
 }

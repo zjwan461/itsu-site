@@ -3,7 +3,6 @@ package com.itsu.core.component;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -379,8 +378,28 @@ public class ItsuSiteConfigProperties {
 
         private int hashIterations = 1;
 
+        private boolean cacheEnable = true;
+
         // 单位是秒s
         private int cacheExpire = 60 * 60;
+
+        private CacheType cacheType = CacheType.MEMORY;
+
+        public boolean isCacheEnable() {
+            return cacheEnable;
+        }
+
+        public void setCacheEnable(boolean cacheEnable) {
+            this.cacheEnable = cacheEnable;
+        }
+
+        public CacheType getCacheType() {
+            return cacheType;
+        }
+
+        public void setCacheType(CacheType cacheType) {
+            this.cacheType = cacheType;
+        }
 
         /**
          * @return the loginUrl
@@ -478,6 +497,10 @@ public class ItsuSiteConfigProperties {
          */
         public void setCacheExpire(int cacheExpire) {
             this.cacheExpire = cacheExpire;
+        }
+
+        public enum CacheType {
+            MEMORY, REDIS;
         }
 
     }

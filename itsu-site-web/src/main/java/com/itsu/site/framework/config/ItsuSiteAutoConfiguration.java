@@ -41,6 +41,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -60,7 +62,7 @@ import java.io.IOException;
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableAsync
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
-@Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
+@Import({CommonConfiguration.class, MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
 public class ItsuSiteAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ItsuSiteAutoConfiguration.class);
@@ -71,16 +73,18 @@ public class ItsuSiteAutoConfiguration {
         this.itsuSiteConfigProperties = itsuSiteConfigProperties;
     }
 
-    @Bean
-    public TransferSiteConfigProperties siteConfig() {
-        return new TransferSiteConfigProperties(itsuSiteConfigProperties);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(SpringUtil.class)
-    public SpringUtil springUtil() {
-        return new SpringUtil();
-    }
+//    @Bean
+//    public TransferSiteConfigProperties siteConfig() {
+//        TransferSiteConfigProperties siteConfig = new TransferSiteConfigProperties();
+//        siteConfig.setConfig(itsuSiteConfigProperties);
+//        return siteConfig;
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean(SpringUtil.class)
+//    public SpringUtil springUtil() {
+//        return new SpringUtil();
+//    }
 
     @Bean
     @ConditionalOnMissingBean(ErrorProperties.class)
@@ -157,12 +161,12 @@ public class ItsuSiteAutoConfiguration {
         return new ExceptionThrowFilter();
     }
 
-    @Bean
-    @ConditionalOnWebApplication
-    @ConditionalOnBean(DispatcherServlet.class)
-    public SpringMvcHelper springMvcHelper() {
-        return new SpringMvcHelper();
-    }
+//    @Bean
+//    @ConditionalOnWebApplication
+//    @ConditionalOnBean(DispatcherServlet.class)
+//    public SpringMvcHelper springMvcHelper() {
+//        return new SpringMvcHelper();
+//    }
 
     @Bean
     public MapperCacheTransfer mapperCacheTransfer() {
