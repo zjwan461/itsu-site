@@ -11,8 +11,6 @@ import com.itsu.core.shiro.AuthenRealmBase;
 import com.itsu.core.shiro.JwtTokenFilter;
 import com.itsu.core.shiro.MemoryCacheManager;
 import com.itsu.core.shiro.StatelessDefaultSubjectFactory;
-import com.itsu.site.framework.config.annotation.condition.ConditionalOnShiroCacheMemory;
-import com.itsu.site.framework.config.annotation.condition.ConditionalOnShiroCacheRedis;
 import com.itsu.site.framework.shiro.filter.ItsuSiteApiJwtTokenFilter;
 import com.itsu.site.framework.shiro.realm.AuthenRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -50,12 +48,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-//TODO 缺一個memory cache
 @Configuration
 @AutoConfigureAfter(RedisConfiguration.class)
 public class ShiroConfiguration {
 
-    @Value("${spring.application.name")
+    @Value("${itsu.site.name")
     private String applicationName;
 
     @Resource
@@ -159,11 +156,17 @@ public class ShiroConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(SessionsSecurityManager.class)
-    public SecurityManager securityManager(RedisCacheManager redisCacheManager) {
+    public SecurityManager securityManager(RedisCacheManager redisCacheManager, MemoryCacheManager memoryCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         ThreadContext.bind(securityManager);
         securityManager.setRealms(Arrays.asList(this.authenRealm));
-        securityManager.setCacheManager(redisCacheManager);
+        if (kProperties.getSecurityConfig().isCacheEnable()) {
+            if (kProperties.getSecurityConfig().getCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.MEMORY) {
+                securityManager.setCacheManager(memoryCacheManager);
+            } else if (kProperties.getSecurityConfig().getCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.REDIS) {
+                securityManager.setCacheManager(redisCacheManager);
+            }
+        }
         return securityManager;
     }
 
@@ -222,8 +225,7 @@ public class ShiroConfiguration {
      * @return
      */
     @Bean
-    @ConditionalOnMissingBean(CacheManager.class)
-    @ConditionalOnShiroCacheRedis
+    @ConditionalOnMissingBean(RedisCacheManager.class)
     public RedisCacheManager redisCacheManager(RedisManager redisManager) {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager);
@@ -241,7 +243,6 @@ public class ShiroConfiguration {
     @Bean
     @ConditionalOnBean(RedisCacheManager.class)
     @ConditionalOnMissingBean(RedisManager.class)
-//    @ConditionalOnShiroCacheRedis
     public RedisManager redisManager(JedisPoolConfig jedisPoolConfig, RedisProperties redisProperties) {
         RedisManager redisManager = new RedisManager();
         redisManager.setJedisPoolConfig(jedisPoolConfig);
@@ -257,8 +258,7 @@ public class ShiroConfiguration {
      * @return
      */
     @Bean
-    @ConditionalOnMissingBean(CacheManager.class)
-//    @ConditionalOnShiroCacheMemory
+    @ConditionalOnMissingBean(MemoryCacheManager.class)
     public MemoryCacheManager memoryCacheManager() {
         MemoryCacheManager memoryCacheManager = new MemoryCacheManager();
         memoryCacheManager.setExpire(TimeUnit.SECONDS.toMillis(kProperties.getSecurityConfig().getCacheExpire()));

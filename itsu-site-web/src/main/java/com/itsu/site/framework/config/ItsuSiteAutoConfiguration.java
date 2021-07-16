@@ -21,6 +21,7 @@ import com.itsu.core.util.ClassPathResourceUtil;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.sys.ErrorProperties;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.component.GenerateHtml;
 import com.itsu.site.framework.component.RefreshTokenAspectAdaptor;
@@ -41,16 +42,17 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author Jerry Su
@@ -62,7 +64,7 @@ import java.io.IOException;
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableAsync
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
-@Import({CommonConfiguration.class, MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
+@Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
 public class ItsuSiteAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ItsuSiteAutoConfiguration.class);
@@ -73,22 +75,33 @@ public class ItsuSiteAutoConfiguration {
         this.itsuSiteConfigProperties = itsuSiteConfigProperties;
     }
 
-//    @Bean
-//    public TransferSiteConfigProperties siteConfig() {
-//        TransferSiteConfigProperties siteConfig = new TransferSiteConfigProperties();
-//        siteConfig.setConfig(itsuSiteConfigProperties);
-//        return siteConfig;
-//    }
-//
-//    @Bean
-//    @ConditionalOnMissingBean(SpringUtil.class)
-//    public SpringUtil springUtil() {
-//        return new SpringUtil();
-//    }
+    @PostConstruct
+    public void init() {
+        System.out.println(ItsuSiteConstant.PLATFORM_BANNER);
+    }
+
+    @Bean
+    public TransferSiteConfigProperties siteConfig() {
+        TransferSiteConfigProperties siteConfig = new TransferSiteConfigProperties();
+        siteConfig.setConfig(itsuSiteConfigProperties);
+        return siteConfig;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(SpringUtil.class)
+    public SpringUtil springUtil() {
+        return new SpringUtil();
+    }
+
+    @Bean
+    @ConditionalOnWebApplication
+    @ConditionalOnBean(DispatcherServlet.class)
+    public SpringMvcHelper springMvcHelper() {
+        return new SpringMvcHelper();
+    }
 
     @Bean
     @ConditionalOnMissingBean(ErrorProperties.class)
-    @DependsOn("springUtil")
     public ErrorProperties errorProperties() {
         return ErrorPropertiesFactory.getObject();
     }
@@ -130,6 +143,7 @@ public class ItsuSiteAutoConfiguration {
     @Bean
     @ConditionalOnProperty(name = "itsu.site.api-exception-handler.enable", havingValue = "true")
     @ConditionalOnMissingBean(ApiExceptionHandlerBase.class)
+    @DependsOn("errorProperties")
     public ApiExceptionHandlerBase apiExceptionHandler() {
         return new ApiExceptionHandler();
     }
@@ -161,13 +175,6 @@ public class ItsuSiteAutoConfiguration {
         return new ExceptionThrowFilter();
     }
 
-//    @Bean
-//    @ConditionalOnWebApplication
-//    @ConditionalOnBean(DispatcherServlet.class)
-//    public SpringMvcHelper springMvcHelper() {
-//        return new SpringMvcHelper();
-//    }
-
     @Bean
     public MapperCacheTransfer mapperCacheTransfer() {
         return new MapperCacheTransfer();
@@ -193,7 +200,7 @@ public class ItsuSiteAutoConfiguration {
                             try {
                                 if (StrUtil.isNotBlank(sql))
                                     jdbcTemplate.execute(sql);
-                            } catch (DataAccessException e) {
+                            } catch (Exception e) {
                                 logger.warn("error execute sql:[{}], error message:[{}]", sql, e.getMessage());
                             }
                         }
@@ -209,7 +216,22 @@ public class ItsuSiteAutoConfiguration {
             public void run(ApplicationArguments args) throws Exception {
                 prepareSiteConfig();
                 autoCreateTable();
-                logger.info("itsu-site application:{} is started at {}", SystemUtil.getProjectName(), DateUtil.now());
+                if (itsuSiteConfigProperties.isShowIocBeans()) {
+                    System.out.println(ItsuSiteConstant.PLATFORM_NAME + " IOC contains beans: " + JSONUtil.toJsonPrettyStr(SpringUtil.getApplicationContext().getBeanDefinitionNames()));
+                }
+                if (itsuSiteConfigProperties.isShowMvcMapping()) {
+                    System.out.println(ItsuSiteConstant.PLATFORM_NAME + " MVC mappings: [");
+                    SpringMvcHelper helper = SpringUtil.getBean(SpringMvcHelper.class);
+                    Map<RequestMappingInfo, HandlerMethod> handlerMethods = helper.getMapping().getHandlerMethods();
+                    for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+                        RequestMappingInfo key = entry.getKey();
+                        HandlerMethod handlerMethod = entry.getValue();
+                        System.out.println("\t" + key.toString() + "=" + handlerMethod.toString());
+                    }
+                    System.out.println("]");
+
+                }
+                logger.info("{}:{} is started at {}", ItsuSiteConstant.PLATFORM_NAME + "-" + ItsuSiteConstant.PLATFORM_VERSION, SystemUtil.getProjectName(), DateUtil.now());
             }
 
             public void prepareSiteConfig() {
@@ -242,8 +264,9 @@ public class ItsuSiteAutoConfiguration {
                         }
                     }
                 }
-
-                System.out.println(JSONUtil.toJsonPrettyStr(itsuSiteConfigProperties));
+                if (itsuSiteConfigProperties.isShowConfigModel()) {
+                    System.out.println(ItsuSiteConstant.PLATFORM_NAME + " configuration model content: " + JSONUtil.toJsonPrettyStr(itsuSiteConfigProperties));
+                }
             }
 
             public void autoCreateTable() throws Exception {
@@ -251,6 +274,7 @@ public class ItsuSiteAutoConfiguration {
                     logger.info("auto create table is set to false");
                 } else {
                     ItsuSiteConfigProperties.AutoCreateDbTable.Type type = itsuSiteConfigProperties.getAutoCreateDbTable().getType();
+                    logger.info("auto create table is set to {}", type);
                     if (type == ItsuSiteConfigProperties.AutoCreateDbTable.Type.CREATE) {
                         execute("classpath:schema/create.sql");
                     } else if (type == ItsuSiteConfigProperties.AutoCreateDbTable.Type.UPDATE) {

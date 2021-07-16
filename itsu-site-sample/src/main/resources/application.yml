@@ -48,6 +48,9 @@ itsu:
     security-config:
       login-url: /login-in
       logout-url: /
+    show-config-model: true
+    show-ioc-beans: true
+    show-mvc-mapping: true
 #itsu:
 #  site:
 #    auto-create-db-table:

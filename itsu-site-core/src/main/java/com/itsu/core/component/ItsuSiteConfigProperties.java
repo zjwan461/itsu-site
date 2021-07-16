@@ -15,6 +15,12 @@ public class ItsuSiteConfigProperties {
 
     private boolean enable = true;
 
+    private boolean showConfigModel = false;
+
+    private boolean showIocBeans = false;
+
+    private boolean showMvcMapping = false;
+
     private ApiExceptionHandler apiExceptionHandler = new ApiExceptionHandler();
 
     private MapperCache mapperCache = new MapperCache();
@@ -50,6 +56,30 @@ public class ItsuSiteConfigProperties {
     private Pagination pagination = new Pagination();
 
     private CrossOrigin crossOrigin = new CrossOrigin();
+
+    public boolean isShowConfigModel() {
+        return showConfigModel;
+    }
+
+    public void setShowConfigModel(boolean showConfigModel) {
+        this.showConfigModel = showConfigModel;
+    }
+
+    public boolean isShowIocBeans() {
+        return showIocBeans;
+    }
+
+    public void setShowIocBeans(boolean showIocBeans) {
+        this.showIocBeans = showIocBeans;
+    }
+
+    public boolean isShowMvcMapping() {
+        return showMvcMapping;
+    }
+
+    public void setShowMvcMapping(boolean showMvcMapping) {
+        this.showMvcMapping = showMvcMapping;
+    }
 
     public CrossOrigin getCrossOrigin() {
         return crossOrigin;
