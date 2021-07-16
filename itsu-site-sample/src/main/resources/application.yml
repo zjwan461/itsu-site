@@ -46,11 +46,12 @@ mybatis-plus:
 itsu:
   site:
     security-config:
-      login-url: /login-in
+      login-url: /login
       logout-url: /
     show-config-model: true
     show-ioc-beans: true
     show-mvc-mapping: true
+    login-aes-encrypt: false
 #itsu:
 #  site:
 #    auto-create-db-table:

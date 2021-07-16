@@ -6,7 +6,6 @@
  */
 package com.itsu.core.component.mvc;
 
-import com.itsu.core.component.cache.ThreadCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -63,11 +62,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         } else
             log.info("----------{}-request: {} end ----------", this.projectName, requestURI);
 
-        // 请求结束清空线程变量缓存，避免缓存数据被脏读或内存泄露
-        log.debug("start to clean thread cache");
-        ThreadCache.removeString();
-        ThreadCache.clean();
-        log.debug("finish clean thread cache");
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @AccessStrategy(StrategyEnum.ANY)
-public class DemoController {
+public class AnyAccessController {
     public boolean isEnable() {
         return enable;
     }

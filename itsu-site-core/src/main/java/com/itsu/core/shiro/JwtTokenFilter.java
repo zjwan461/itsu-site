@@ -35,6 +35,16 @@ public abstract class JwtTokenFilter extends AccessControlFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenFilter.class);
 
+    @Override
+    public void afterCompletion(ServletRequest request, ServletResponse response, Exception exception) throws Exception {
+        super.afterCompletion(request, response, exception);
+        // 请求结束清空线程变量缓存，避免缓存数据被脏读或内存泄露
+        log.debug("start to clean thread cache");
+        ThreadCache.removeString();
+        ThreadCache.clean();
+        log.debug("finish clean thread cache");
+    }
+
     /**
      * 校验token
      */

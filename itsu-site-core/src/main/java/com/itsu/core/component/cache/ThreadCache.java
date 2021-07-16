@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class ThreadCache {
 
-    private static final ThreadLocal<String> STRING_THREAD_CACHE = ThreadLocal.withInitial(() -> "");
+    private static final ThreadLocal<String> STRING_THREAD_CACHE = ThreadLocal.withInitial(String::new);
 
     private static final ThreadLocal<HashMap<String, Object>> HASH_MAP_THREAD_CACHE = ThreadLocal.withInitial(HashMap::new);
 

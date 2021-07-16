@@ -82,6 +82,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
     @ExceptionHandler(value = AuthenticationException.class)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     public JsonResult handleAuthenticationException(HttpServletRequest request, AuthenticationException e) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         logger.info("found authentication fail to request for {}, which msg is {}", requestURI, e.getMessage());
         return JsonResult.error(CodeConstant.INVALID_USERNAME_OR_PASSWORD.getErrorCode(),
@@ -110,6 +111,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
      * @return
      */
     public JsonResult authenHandle(HttpServletRequest request, ShiroException e) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         logger.info("found unauthnorized request for {}, which msg is {} ", requestURI, e.getMessage());
         return JsonResult.error(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode(),

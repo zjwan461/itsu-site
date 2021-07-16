@@ -26,7 +26,7 @@ public class JunitTest {
 
     @Test
     public void test2() {
-        Md5Hash md5Hash = new Md5Hash("password", "jerry", 10);
+        Md5Hash md5Hash = new Md5Hash("password", "ONhwKZ9oUDyzgUoaKvZW2xaqzPqiNq1b", 1);
         System.out.println(md5Hash.toString());
     }
 

@@ -58,15 +58,6 @@ public class ShiroConfiguration {
     @Resource
     private ItsuSiteConfigProperties kProperties;
 
-    @Resource
-    private AuthenRealm authenRealm;
-
-    @Resource
-    private CredentialsMatcher credentialsMatcher;
-
-    @Resource
-    private JwtTokenFilter jwtTokenFilter;
-
     /**
      * 开启注解权限角色控制
      *
@@ -116,7 +107,7 @@ public class ShiroConfiguration {
     @Bean
     @ConditionalOnMissingBean(ShiroFilterFactoryBean.class)
     public ShiroFilterFactoryBean shiroFilterFactoryBean(ShiroFilterChainDefinition definitions,
-                                                         SecurityManager securityManager) {
+                                                         SecurityManager securityManager, JwtTokenFilter jwtTokenFilter) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("jwt", jwtTokenFilter);
@@ -156,10 +147,11 @@ public class ShiroConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(SessionsSecurityManager.class)
-    public SecurityManager securityManager(RedisCacheManager redisCacheManager, MemoryCacheManager memoryCacheManager) {
+    public SecurityManager securityManager(RedisCacheManager redisCacheManager, MemoryCacheManager memoryCacheManager, AuthenRealmBase authenRealm
+            , SessionManager sessionManager, SubjectDAO subjectDAO, SubjectFactory subjectFactory) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         ThreadContext.bind(securityManager);
-        securityManager.setRealms(Arrays.asList(this.authenRealm));
+        securityManager.setRealms(Arrays.asList(authenRealm));
         if (kProperties.getSecurityConfig().isCacheEnable()) {
             if (kProperties.getSecurityConfig().getCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.MEMORY) {
                 securityManager.setCacheManager(memoryCacheManager);
@@ -167,6 +159,9 @@ public class ShiroConfiguration {
                 securityManager.setCacheManager(redisCacheManager);
             }
         }
+        securityManager.setSessionManager(sessionManager);
+        securityManager.setSubjectDAO(subjectDAO);
+        securityManager.setSubjectFactory(subjectFactory);
         return securityManager;
     }
 
@@ -191,7 +186,7 @@ public class ShiroConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(AuthenRealmBase.class)
-    public AuthenRealmBase authenRealm() {
+    public AuthenRealmBase authenRealm(CredentialsMatcher credentialsMatcher) {
         AuthenRealm authenRealm = new AuthenRealm();
         authenRealm.setName(applicationName + "-realm");
         if (kProperties.getSecurityConfig().isCacheEnable()) {
@@ -201,7 +196,7 @@ public class ShiroConfiguration {
             authenRealm.setAuthorizationCachingEnabled(true);
             authenRealm.setAuthenticationCachingEnabled(true);
         }
-        authenRealm.setCredentialsMatcher(this.credentialsMatcher);
+        authenRealm.setCredentialsMatcher(credentialsMatcher);
         return authenRealm;
     }
 
