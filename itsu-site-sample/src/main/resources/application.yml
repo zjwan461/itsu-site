@@ -52,6 +52,10 @@ itsu:
     show-ioc-beans: true
     show-mvc-mapping: true
     login-aes-encrypt: false
+    auto-create-db-table:
+      enable: true
+      type: update
+      init-data: true
 #itsu:
 #  site:
 #    auto-create-db-table:

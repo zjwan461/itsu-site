@@ -30,17 +30,6 @@
 
     <property name="LOG_FORMAT" value="[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%thread] %logger{-1}:%line - %msg%n"/>
 
-    <!-- <springProfile name="sit">
-         &lt;!&ndash;日志导出的到 Logstash&ndash;&gt;
-         <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-             <destination>192.168.22.122:9250</destination>
-             <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
-                 <customFields>{"appname":"site-demo"}</customFields>
-             </encoder>
-             <keepAliveDuration>15 minutes</keepAliveDuration>
-         </appender>
-     </springProfile>-->
-
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${LOG_FORMAT}</pattern>
@@ -129,7 +118,7 @@
         <appender-ref ref="file_error"/>
     </appender>
 
-    <logger name="com.itsu.site.framework.mapper" level="debug"/>
+    <logger name="com.itsu" level="debug"/>
 
     <logger name="com.itsu.sample.mapper" level="debug"/>
 
@@ -138,9 +127,6 @@
         <appender-ref ref="async_info"/>
         <appender-ref ref="async_warn"/>
         <appender-ref ref="async_error"/>
-        <!--  <springProfile name="sit">
-              <appender-ref ref="stash"/>
-          </springProfile>-->
     </root>
 
 </configuration>

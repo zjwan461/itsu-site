@@ -6,6 +6,10 @@
  */
 package com.itsu.site.framework.controller.handler;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.itsu.core.component.dytoken.RefreshToken;
 import com.itsu.core.exception.CodeAbleException;
@@ -14,12 +18,12 @@ import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.sys.CodeConstant;
 import com.itsu.core.vo.sys.ErrorProperties;
+
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -29,10 +33,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class ApiExceptionHandler implements ApiExceptionHandlerBase {
 
