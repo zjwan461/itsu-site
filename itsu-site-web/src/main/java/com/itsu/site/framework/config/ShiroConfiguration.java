@@ -6,14 +6,6 @@
  */
 package com.itsu.site.framework.config;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-import javax.servlet.Filter;
-
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.shiro.AuthenRealmBase;
 import com.itsu.core.shiro.JwtTokenFilter;
@@ -21,16 +13,10 @@ import com.itsu.core.shiro.MemoryCacheManager;
 import com.itsu.core.shiro.StatelessDefaultSubjectFactory;
 import com.itsu.site.framework.shiro.filter.ItsuSiteApiJwtTokenFilter;
 import com.itsu.site.framework.shiro.realm.AuthenRealm;
-
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
-import org.apache.shiro.mgt.DefaultSubjectFactory;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.mgt.SessionsSecurityManager;
-import org.apache.shiro.mgt.SubjectDAO;
-import org.apache.shiro.mgt.SubjectFactory;
+import org.apache.shiro.mgt.*;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -40,6 +26,7 @@ import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -50,8 +37,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import redis.clients.jedis.JedisPoolConfig;
+
+import javax.annotation.Resource;
+import javax.servlet.Filter;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @AutoConfigureAfter(RedisConfiguration.class)
@@ -139,7 +132,7 @@ public class ShiroConfiguration {
      */
     @Bean
     public SessionManager sessionManager() {
-        DefaultSessionManager shiroSessionManager = new DefaultSessionManager();
+        DefaultSessionManager shiroSessionManager = new DefaultWebSessionManager();
         // 关闭session校验轮询
         shiroSessionManager.setSessionValidationSchedulerEnabled(false);
         return shiroSessionManager;
