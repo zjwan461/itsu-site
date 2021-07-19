@@ -38,7 +38,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -64,6 +66,7 @@ import java.util.Map;
 @EnableAsync
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
 @Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
+@AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
 public class ItsuSiteAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ItsuSiteAutoConfiguration.class);

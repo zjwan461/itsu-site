@@ -21,9 +21,9 @@ public class CrossOriginFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Access-Control-Allow-Origin",
                 CollUtil.join(CollUtil.newArrayList(crossOrigin.getAllowOrigins()), ","));
-        response.setHeader("Access-Control-Allow-Methods", "POST, DELETE, PUT, GET");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        response.setHeader("Access-Control-Allow-Methods", CollUtil.join(CollUtil.newArrayList(crossOrigin.getAllowMethods()), ","));
+        response.setHeader("Access-Control-Max-Age", crossOrigin.getMaxAge().toString());
+        response.setHeader("Access-Control-Allow-Headers", CollUtil.join(CollUtil.newArrayList(crossOrigin.getAllowHeaders()), ","));
         chain.doFilter(req, res);
     }
 

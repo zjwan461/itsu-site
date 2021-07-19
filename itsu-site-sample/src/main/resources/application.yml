@@ -20,8 +20,9 @@ spring:
   jackson:
     date-format: yyyy-MM-dd
     time-zone: GMT+8
+    default-property-inclusion: non_null
   mvc:
-    throw-exception-if-no-handler-found: true
+    #    throw-exception-if-no-handler-found: true
     format:
       date: yyyy-MM-dd
       date-time: yyyy-MM-dd HH:mm:ss
@@ -29,7 +30,7 @@ spring:
     active:
       - dev
 server:
-  port: 1226
+  #  port: 1226
   servlet:
     session:
       timeout: PT8H

@@ -1051,17 +1051,18 @@ public class ItsuSiteConfigProperties {
          * @return the allowOrigins
          */
         public String[] getAllowOrigins() {
-            return allowOrigins;
+            if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
+                return new String[]{"*"};
+            else
+                return allowOrigins;
+
         }
 
         /**
          * @param allowOrigins the allowOrigins to set
          */
         public void setAllowOrigins(String[] allowOrigins) {
-            if (allowOrigins != null && allowOrigins.length == 1 && allowOrigins[0].equals("all"))
-                this.allowOrigins = new String[]{"*"};
-            else
-                this.allowOrigins = allowOrigins;
+            this.allowOrigins = allowOrigins;
         }
     }
 
