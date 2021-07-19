@@ -400,6 +400,10 @@ public class ItsuSiteConfigProperties {
 
         private String logoutUrl = "/";
 
+        private String authenUrlPrefix = "/api/**";
+
+        private String noAuthenUrlPrefix = "/anon/**";
+
         private String authenticationCacheName = "AUTHEN:CACHE";
 
         private String authorizationCacheName = "AUTHORI:CACHE";
@@ -414,6 +418,22 @@ public class ItsuSiteConfigProperties {
         private int cacheExpire = 60 * 60;
 
         private CacheType cacheType = CacheType.MEMORY;
+
+        public String getAuthenUrlPrefix() {
+            return authenUrlPrefix;
+        }
+
+        public void setAuthenUrlPrefix(String authenUrlPrefix) {
+            this.authenUrlPrefix = authenUrlPrefix;
+        }
+
+        public String getNoAuthenUrlPrefix() {
+            return noAuthenUrlPrefix;
+        }
+
+        public void setNoAuthenUrlPrefix(String noAuthenUrlPrefix) {
+            this.noAuthenUrlPrefix = noAuthenUrlPrefix;
+        }
 
         public boolean isCacheEnable() {
             return cacheEnable;

@@ -77,10 +77,11 @@ public class ShiroConfiguration {
     @ConditionalOnMissingBean(ShiroFilterChainDefinition.class)
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-        chainDefinition.addPathDefinition("/logout", "logout");
-        chainDefinition.addPathDefinition("/api/**", "jwt");
-        chainDefinition.addPathDefinition("/anon/**", "anon");
-        chainDefinition.addPathDefinition("/login", "anon");
+        ItsuSiteConfigProperties.SecurityConfig securityConfig = kProperties.getSecurityConfig();
+        chainDefinition.addPathDefinition(securityConfig.getLogoutUrl(), "logout");
+        chainDefinition.addPathDefinition(securityConfig.getAuthenUrlPrefix(), "jwt");
+        chainDefinition.addPathDefinition(securityConfig.getNoAuthenUrlPrefix(), "anon");
+        chainDefinition.addPathDefinition(securityConfig.getLoginUrl(), "anon");
         return chainDefinition;
     }
 
