@@ -408,7 +408,9 @@ public class ItsuSiteConfigProperties {
     public static class SecurityConfig {
         private String loginUrl = "/login";
 
-        private String logoutUrl = "/";
+        private String logoutUrl = "/logout";
+
+        private String logoutRedirect = "/";
 
         private String authenUrlPrefix = "/api/**";
 
@@ -428,6 +430,14 @@ public class ItsuSiteConfigProperties {
         private int cacheExpire = 60 * 60;
 
         private CacheType cacheType = CacheType.MEMORY;
+
+        public String getLogoutRedirect() {
+            return logoutRedirect;
+        }
+
+        public void setLogoutRedirect(String logoutRedirect) {
+            this.logoutRedirect = logoutRedirect;
+        }
 
         public String getAuthenUrlPrefix() {
             return authenUrlPrefix;

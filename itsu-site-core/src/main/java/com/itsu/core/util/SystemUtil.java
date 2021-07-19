@@ -131,11 +131,13 @@ public final class SystemUtil {
         return !String.class.isAssignableFrom(field.getType()) && !Integer.class.isAssignableFrom(field.getType())
                 && !Double.class.isAssignableFrom(field.getType()) && !Float.class.isAssignableFrom(field.getType())
                 && !Boolean.class.isAssignableFrom(field.getType()) && boolean.class != field.getType()
-                && char.class != field.getType() && void.class != field.getType();
+                && char.class != field.getType() && void.class != field.getType() && int.class != field.getType()
+                && float.class != field.getType() && double.class != field.getType() && long.class != field.getType()
+                && byte.class != field.getType() && short.class != field.getType();
     }
 
     /**
-     * 判断是否为登录&登出url
+     * 判断是否为登录&登出url,包含logout redirect url
      *
      * @param request
      * @return
@@ -144,7 +146,8 @@ public final class SystemUtil {
         String requestURI = request.getRequestURI();
         String contextPath = request.getServletContext().getContextPath();
         if ((contextPath + getItsuSiteConfigProperties().getSecurityConfig().getLoginUrl()).equals(requestURI)
-                || (contextPath + getItsuSiteConfigProperties().getSecurityConfig().getLogoutUrl()).equals(requestURI)) {
+                || (contextPath + getItsuSiteConfigProperties().getSecurityConfig().getLogoutUrl()).equals(requestURI)
+                || (contextPath + getItsuSiteConfigProperties().getSecurityConfig().getLogoutRedirect()).equals(requestURI)) {
             return true;
         }
         return false;
@@ -218,6 +221,6 @@ public final class SystemUtil {
         String[] beanNamesForAnnotation = SpringUtil.getApplicationContext().getBeanNamesForAnnotation(SpringBootApplication.class);
         String beanName = ArrayUtil.isNotEmpty(beanNamesForAnnotation) ? beanNamesForAnnotation[0] : null;
         assert beanName != null;
-        return  SpringUtil.getBean(beanName);
+        return SpringUtil.getBean(beanName);
     }
 }
