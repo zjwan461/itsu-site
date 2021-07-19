@@ -241,15 +241,17 @@ public class ItsuSiteAutoConfiguration {
             public void prepareSiteConfig() {
                 ApplicationContext dac = SpringUtil.getBean(ApplicationContext.class);
                 if (!itsuSiteConfigProperties.getApiExceptionHandler().isEnable()) {
-                    if (dac != null && (boolean) dac.get("ApiExceptionHandler")) {
+                    boolean aeh = dac.get("ApiExceptionHandler") != null && (boolean) dac.get("ApiExceptionHandler");
+                    if (aeh) {
                         itsuSiteConfigProperties.getApiExceptionHandler().setEnable(true);
                     }
                 }
                 if (!itsuSiteConfigProperties.getGlobalParamCheck().isEnable()) {
-                    if (dac != null && (boolean) dac.get("globalParamCheck")) {
+                    boolean gpc = dac.get("globalParamCheck") != null && (boolean) dac.get("globalParamCheck");
+                    if (gpc) {
                         itsuSiteConfigProperties.getGlobalParamCheck().setEnable(true);
                     }
-                    if (dac != null && ArrayUtil.isNotEmpty(dac.get("regExs"))) {
+                    if (ArrayUtil.isNotEmpty(dac.get("regExs")) && dac.get("regExs") != null) {
                         itsuSiteConfigProperties.getGlobalParamCheck().setRegExs((String[]) dac.get("regExs"));
                     }
                 }
@@ -265,9 +267,15 @@ public class ItsuSiteAutoConfiguration {
                     } else if (dac.get("refreshTokenType") == RefreshTokenType.REDIS) {
                         itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.REDIS);
                     }
-                    itsuSiteConfigProperties.getAccessToken().setExpire((String) dac.get("expire"));
-                    itsuSiteConfigProperties.getAccessToken().setBackUpTokenNum((Integer) dac.get("backUpNum"));
-                    itsuSiteConfigProperties.getAccessToken().setKeyPrefix((String) dac.get("keyPrefix"));
+                    if (dac.get("expire") != null) {
+                        itsuSiteConfigProperties.getAccessToken().setExpire((String) dac.get("expire"));
+                    }
+                    if (dac.get("backUpNum") != null) {
+                        itsuSiteConfigProperties.getAccessToken().setBackUpTokenNum((Integer) dac.get("backUpNum"));
+                    }
+                    if (dac.get("keyPrefix") != null) {
+                        itsuSiteConfigProperties.getAccessToken().setKeyPrefix((String) dac.get("keyPrefix"));
+                    }
                 }
 
                 if (itsuSiteConfigProperties.isShowConfigModel()) {
