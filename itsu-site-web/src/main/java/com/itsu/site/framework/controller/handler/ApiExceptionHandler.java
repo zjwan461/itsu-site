@@ -85,8 +85,8 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
         e.printStackTrace();
         String requestURI = request.getRequestURI();
         logger.info("found authentication fail to request for {}, which msg is {}", requestURI, e.getMessage());
-        return JsonResult.error(CodeConstant.INVALID_USERNAME_OR_PASSWORD.getErrorCode(),
-                prop.getErrorMsg(CodeConstant.INVALID_USERNAME_OR_PASSWORD.getErrorCode()));
+        return JsonResult.error(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode(),
+                prop.getErrorMsg(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode()));
     }
 
     /**
@@ -97,25 +97,14 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
      * @return
      */
     @ExceptionHandler(value = AuthorizationException.class)
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
     @RefreshToken(exceptionHandler = true)
     public JsonResult handleAuthorizationException(HttpServletRequest request, AuthorizationException e) {
-        return authenHandle(request, e);
-    }
-
-    /**
-     * shiro授权异常拦截处理方法
-     *
-     * @param request
-     * @param e
-     * @return
-     */
-    public JsonResult authenHandle(HttpServletRequest request, ShiroException e) {
         e.printStackTrace();
         String requestURI = request.getRequestURI();
         logger.info("found unauthnorized request for {}, which msg is {} ", requestURI, e.getMessage());
-        return JsonResult.error(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode(),
-                prop.getErrorMsg(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode()));
+        return JsonResult.error(CodeConstant.AUTHOR_ERROR_CODE.getErrorCode(),
+                prop.getErrorMsg(CodeConstant.AUTHOR_ERROR_CODE.getErrorCode()));
     }
 
     /**
@@ -174,7 +163,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
      */
     @RefreshToken(exceptionHandler = true)
     @ExceptionHandler(value = BindException.class)
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public JsonResult handleBindException() {
         return JsonResult.error(CodeConstant.BIND_ERROR_CODE.getErrorCode(),
                 prop.getErrorMsg(CodeConstant.BIND_ERROR_CODE.getErrorCode()));
@@ -195,7 +184,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
     }
 
     /**
-     * 不满足接口接收参数异常处理
+     * 不满足接口接收参数
      *
      * @param request
      * @param e
@@ -203,7 +192,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
      */
     @RefreshToken(exceptionHandler = true)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public JsonResult handleMethodArgumentNotValidException(HttpServletRequest request,
                                                             MethodArgumentNotValidException e) {
         String requestURI = request.getRequestURI();
