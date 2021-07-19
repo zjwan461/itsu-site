@@ -44,7 +44,13 @@ public class AccountServiceImpl implements AccountService {
         } else {
             token = new UsernamePasswordToken(loginReqVo.getUsername(), loginReqVo.getPassword());
         }
+        //执行shiro realm认证方法
         SecurityUtils.getSubject().login(token);
+        LoginRespVo data = getLoginRespVo(token);
+        return JsonResult.ok(data);
+    }
+
+    protected LoginRespVo getLoginRespVo(UsernamePasswordToken token) {
         QueryWrapper<Account> condition = new QueryWrapper<>();
         condition.eq("username", token.getUsername());
         Account user = accountMapper.selectOne(condition);
@@ -58,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
             backUpTokens.add(JWTUtil.sign(user.getUsername(), user.getUsername(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
         }
         data.setBackUpTokens(backUpTokens);
-        return JsonResult.ok(data);
+        return data;
     }
 
     @Override
