@@ -17,6 +17,15 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Import(RefreshTokenImportSelector.class)
 public @interface EnableRefreshToken {
+
+    boolean dynamic() default false;
+
+    String keyPrefix() default "accesstoken:blacklist:";
+
+    String expire() default "30m";
+
+    int backUpNum() default 1;
+
     RefreshTokenType type() default RefreshTokenType.MEMORY;
 
     Class<? extends RefreshTokenAspect> customRefreshTokenAspect() default RefreshTokenAspectAdaptor.class;

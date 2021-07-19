@@ -15,6 +15,8 @@ import com.itsu.core.util.TimeUtil;
 import com.itsu.site.framework.mapper.AccountMapper;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
 
@@ -28,11 +30,15 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
      * 重新颁发token的实现
      */
     @Override
-    protected String newSign(String username) {
+    protected List<String> newSign(String username) {
         QueryWrapper<Account> condition = new QueryWrapper<>();
         condition.eq("username", username).last("limit 1");
         Account account = accountMapper.selectOne(condition);
-        return JWTUtil.sign(username, account.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire()));
+        List<String> tokens = new ArrayList<>();
+        for (int i = 0; i < configProperties.getAccessToken().getBackUpTokenNum(); i++) {
+            tokens.add(JWTUtil.sign(username, account.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
+        }
+        return tokens;
     }
 
 }

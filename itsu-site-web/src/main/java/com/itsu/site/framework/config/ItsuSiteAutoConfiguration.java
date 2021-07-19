@@ -17,6 +17,8 @@ import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.validate.GlobalRequestParamValidate;
 import com.itsu.core.exception.InitialException;
+import com.itsu.core.framework.ApplicationContext;
+import com.itsu.core.framework.DefaultApplicationContext;
 import com.itsu.core.util.ClassPathResourceUtil;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.SystemUtil;
@@ -26,9 +28,6 @@ import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.component.GenerateHtml;
 import com.itsu.site.framework.component.RefreshTokenAspectAdaptor;
 import com.itsu.site.framework.component.ScriptProcess;
-import com.itsu.site.framework.config.annotation.enable.EnableApiExceptionHandler;
-import com.itsu.site.framework.config.annotation.enable.EnableGlobalParamCheck;
-import com.itsu.site.framework.config.annotation.enable.EnableRefreshToken;
 import com.itsu.site.framework.controller.AccountLoginController;
 import com.itsu.site.framework.controller.FilterErrorController;
 import com.itsu.site.framework.controller.handler.ApiExceptionHandler;
@@ -78,6 +77,11 @@ public class ItsuSiteAutoConfiguration {
     @PostConstruct
     public void init() {
         System.out.println(ItsuSiteConstant.PLATFORM_BANNER);
+    }
+
+    @Bean
+    public ApplicationContext dac() {
+        return DefaultApplicationContext.getInstance();
     }
 
     @Bean
@@ -235,35 +239,37 @@ public class ItsuSiteAutoConfiguration {
             }
 
             public void prepareSiteConfig() {
-                // @Enable注解修改的siteConfig属性重新写入siteConfig对象，并重入IOC中
-                Class<?> starterClass = SystemUtil.getStarterClassBean().getClass();
-                EnableApiExceptionHandler eaeh = starterClass.getAnnotation(EnableApiExceptionHandler.class);
+                ApplicationContext dac = SpringUtil.getBean(ApplicationContext.class);
                 if (!itsuSiteConfigProperties.getApiExceptionHandler().isEnable()) {
-                    if (eaeh != null) {
+                    if (dac != null && (boolean) dac.get("ApiExceptionHandler")) {
                         itsuSiteConfigProperties.getApiExceptionHandler().setEnable(true);
                     }
                 }
-                EnableGlobalParamCheck egpc = starterClass.getAnnotation(EnableGlobalParamCheck.class);
                 if (!itsuSiteConfigProperties.getGlobalParamCheck().isEnable()) {
-                    if (egpc != null) {
+                    if (dac != null && (boolean) dac.get("globalParamCheck")) {
                         itsuSiteConfigProperties.getGlobalParamCheck().setEnable(true);
-                        if (ArrayUtil.isNotEmpty(egpc.regExs())) {
-                            itsuSiteConfigProperties.getGlobalParamCheck().setRegExs(egpc.regExs());
-                        }
+                    }
+                    if (dac != null && ArrayUtil.isNotEmpty(dac.get("regExs"))) {
+                        itsuSiteConfigProperties.getGlobalParamCheck().setRegExs((String[]) dac.get("regExs"));
                     }
                 }
 
-                EnableRefreshToken ert = starterClass.getAnnotation(EnableRefreshToken.class);
                 if (!itsuSiteConfigProperties.getAccessToken().isDynamic()) {
-                    if (ert != null) {
+                    Object dynamic = dac.get("dynamic");
+                    boolean isDy = dynamic != null && (boolean) dynamic;
+                    if (isDy) {
                         itsuSiteConfigProperties.getAccessToken().setDynamic(true);
-                        if (ert.type() == RefreshTokenType.MEMORY) {
-                            itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.MEMORY);
-                        } else if (ert.type() == RefreshTokenType.REDIS) {
-                            itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.REDIS);
-                        }
                     }
+                    if (dac.get("refreshTokenType") == RefreshTokenType.MEMORY) {
+                        itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.MEMORY);
+                    } else if (dac.get("refreshTokenType") == RefreshTokenType.REDIS) {
+                        itsuSiteConfigProperties.getAccessToken().setType(RefreshTokenType.REDIS);
+                    }
+                    itsuSiteConfigProperties.getAccessToken().setExpire((String) dac.get("expire"));
+                    itsuSiteConfigProperties.getAccessToken().setBackUpTokenNum((Integer) dac.get("backUpNum"));
+                    itsuSiteConfigProperties.getAccessToken().setKeyPrefix((String) dac.get("keyPrefix"));
                 }
+
                 if (itsuSiteConfigProperties.isShowConfigModel()) {
                     System.out.println(ItsuSiteConstant.PLATFORM_NAME + " configuration model content: " + JSONUtil.toJsonPrettyStr(itsuSiteConfigProperties));
                 }

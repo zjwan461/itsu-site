@@ -1,5 +1,6 @@
 package com.itsu.sample.controller;
 
+import com.itsu.core.vo.JsonResult;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.subject.Subject;
@@ -17,8 +18,8 @@ public class AccessController {
 
     @GetMapping("/hello")
     @RequiresAuthentication
-    public String idx() {
+    public JsonResult<String> idx() {
         Subject subject = SecurityUtils.getSubject();
-        return "hello";
+        return JsonResult.ok("hello itsu-site");
     }
 }

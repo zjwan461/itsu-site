@@ -10,4 +10,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Import(ApiExceptionHandlerImportSelector.class)
 public @interface EnableApiExceptionHandler {
+    boolean enable() default true;
 }

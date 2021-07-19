@@ -31,6 +31,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -105,10 +106,10 @@ public abstract class RefreshTokenAspect {
             if (subject.isAuthenticated() && result instanceof JsonResult && logioTag && refreshTokenFlag) {
 
                 String username = JWTUtil.getUsername(oldToken);
-                String accesstoken = this.newSign(username);
+                List<String> accesstokens = this.newSign(username);
                 JsonResult jr = (JsonResult) result;
-                jr.setRefreshToken(accesstoken);
-                logger.debug("success refresh accesstoken [{}] ", accesstoken);
+                jr.setRefreshTokens(accesstokens);
+                logger.debug("success refresh accesstoken [{}] ", accesstokens);
                 declineOldToken(oldToken, username);
             } else {
                 logger.debug("do not need refresh accesstoken");
@@ -124,7 +125,7 @@ public abstract class RefreshTokenAspect {
      * @param username
      * @return
      */
-    protected abstract String newSign(String username);
+    protected abstract List<String> newSign(String username);
 
     /**
      * 旧token加入redis/memory黑名单

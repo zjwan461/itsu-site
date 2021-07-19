@@ -2,6 +2,8 @@ package com.itsu.site.framework.config.importselector;
 
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.exception.CodeAbleException;
+import com.itsu.core.framework.ApplicationContext;
+import com.itsu.core.framework.DefaultApplicationContext;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.config.annotation.enable.EnableRefreshToken;
 import org.springframework.context.annotation.ImportSelector;
@@ -23,13 +25,24 @@ public class RefreshTokenImportSelector implements ImportSelector {
 
         RefreshTokenType rt = (RefreshTokenType) type;
         Class ra = (Class) customRefreshTokenAspect;
-        if (rt == RefreshTokenType.MEMORY) {
-            // 选择本地缓存需要额外加载本地缓存到IOC中
-            return new String[]{ra.getName(), LocalTokenBlackList.class.getName()};
-        } else if (rt == RefreshTokenType.REDIS) {
-            // 选择Redis缓存直接将refreshtoken切面注入IOC中
-            return new String[]{ra.getName()};
-        } else
-            throw new CodeAbleException(10001, "not valid RefreshTokenType for " + EnableRefreshToken.class.getName());
+
+        boolean dynamic = (boolean) attributes.get("dynamic");
+        String keyPrefix = (String) attributes.get("keyPrefix");
+        String expire = (String) attributes.get("expire");
+        int backUpNum = (int) attributes.get("backUpNum");
+        ApplicationContext dac = DefaultApplicationContext.getInstance();
+        if (dynamic) {
+            dac.set("dynamic", true);
+            if (rt == RefreshTokenType.MEMORY) {
+                dac.set("refreshTokenType", RefreshTokenType.MEMORY);
+            } else if (rt == RefreshTokenType.REDIS) {
+                dac.set("refreshTokenType", RefreshTokenType.REDIS);
+            } else
+                throw new CodeAbleException(10001, "not valid RefreshTokenType for " + EnableRefreshToken.class.getName());
+        }
+        dac.set("keyPrefix", keyPrefix);
+        dac.set("expire", expire);
+        dac.set("backUpNum", backUpNum);
+        return new String[]{ra.getName(), LocalTokenBlackList.class.getName()};
     }
 }

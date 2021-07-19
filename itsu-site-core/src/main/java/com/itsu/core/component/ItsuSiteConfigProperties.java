@@ -334,9 +334,19 @@ public class ItsuSiteConfigProperties {
 
         private String keyPrefix = "accesstoken:blacklist:";
 
-        private RefreshTokenType type = RefreshTokenType.REDIS;
+        private RefreshTokenType type = RefreshTokenType.MEMORY;
 
-        private String expire = "24h";
+        private String expire = "30m";
+
+        private Integer backUpTokenNum = 1;
+
+        public Integer getBackUpTokenNum() {
+            return backUpTokenNum;
+        }
+
+        public void setBackUpTokenNum(Integer backUpTokenNum) {
+            this.backUpTokenNum = backUpTokenNum;
+        }
 
         /**
          * @return the dynamic
@@ -1054,4 +1064,5 @@ public class ItsuSiteConfigProperties {
                 this.allowOrigins = allowOrigins;
         }
     }
+
 }

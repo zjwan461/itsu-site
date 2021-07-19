@@ -15,5 +15,7 @@ import java.lang.annotation.*;
 @Import(GlobalParamCheckImportSelector.class)
 public @interface EnableGlobalParamCheck {
 
+    boolean enable() default true;
+
     String[] regExs() default {".*[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\\\\\\\]+.*"};
 }

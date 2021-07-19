@@ -1,6 +1,7 @@
 package com.itsu.core.vo.io.resp;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Jerry Su
@@ -9,6 +10,16 @@ import java.io.Serializable;
 public class LoginRespVo implements RespObjBase, Serializable {
 
     private String accessToken;
+
+    private List<String> backUpTokens;
+
+    public List<String> getBackUpTokens() {
+        return backUpTokens;
+    }
+
+    public void setBackUpTokens(List<String> backUpTokens) {
+        this.backUpTokens = backUpTokens;
+    }
 
     public String getAccessToken() {
         return accessToken;

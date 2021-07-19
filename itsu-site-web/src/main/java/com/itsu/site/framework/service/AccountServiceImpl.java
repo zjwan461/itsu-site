@@ -18,6 +18,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jerry Su
@@ -35,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
      * 登录接口的实现
      */
     @Override
-    public JsonResult login(LoginReqVo loginReqVo) throws CodeAbleException {
+    public JsonResult<LoginRespVo> login(LoginReqVo loginReqVo) throws CodeAbleException {
         UsernamePasswordToken token = null;
         if (SystemUtil.isLoginAesEncrypt()) {
             token = new AesUsernamePasswordToken(loginReqVo.getUsername(), loginReqVo.getPassword());
@@ -48,8 +50,14 @@ public class AccountServiceImpl implements AccountService {
         Account user = accountMapper.selectOne(condition);
         user.setLastLoginTime(DateUtil.now());
         accountMapper.updateById(user);
+        ItsuSiteConfigProperties.AccessToken accessTokenConfig = configProperties.getAccessToken();
         LoginRespVo data = new LoginRespVo();
-        data.setAccessToken(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
+        data.setAccessToken(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
+        List<String> backUpTokens = new ArrayList<>();
+        for (int i = 0; i < accessTokenConfig.getBackUpTokenNum(); i++) {
+            backUpTokens.add(JWTUtil.sign(user.getUsername(), user.getUsername(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
+        }
+        data.setBackUpTokens(backUpTokens);
         return JsonResult.ok(data);
     }
 
