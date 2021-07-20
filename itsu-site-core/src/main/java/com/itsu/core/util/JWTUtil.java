@@ -1,15 +1,14 @@
 package com.itsu.core.util;
 
-import java.util.Date;
-
+import cn.hutool.core.util.RandomUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
 import org.springframework.util.StringUtils;
 
-import cn.hutool.core.util.RandomUtil;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: JWTUtil.java
@@ -23,7 +22,8 @@ public class JWTUtil {
 	}
 
 	// 过期时间1小时
-	public static final long EXPIRE_TIME = 1 * 60 * 60 * 1000 * 1L;
+	public static final long EXPIRE_TIME = TimeUnit.MINUTES.toMillis(60);
+//			1 * 60 * 60 * 1000 * 1L;
 
 	/**
 	 * 生成签名(默认过期时间)
