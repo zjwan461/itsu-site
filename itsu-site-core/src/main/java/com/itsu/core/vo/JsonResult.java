@@ -2,6 +2,7 @@ package com.itsu.core.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.itsu.core.component.mvc.MaskField;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,6 +24,7 @@ public class JsonResult<T> implements Serializable {
     private String msg;
     private T data;
     //	private String refreshToken;
+    @MaskField
     private List<String> refreshTokens;
 
     public JsonResult(Integer code, String msg, T data) {

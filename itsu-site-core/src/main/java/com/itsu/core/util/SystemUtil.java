@@ -254,4 +254,8 @@ public final class SystemUtil {
         assert beanName != null;
         return SpringUtil.getBean(beanName);
     }
+
+    public static boolean isMaskJackson() {
+        return getItsuSiteConfigProperties().getMask().getType() == ItsuSiteConfigProperties.Mask.Type.JACKSON;
+    }
 }

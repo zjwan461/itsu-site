@@ -6,20 +6,21 @@
  */
 package com.itsu.site.framework.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itsu.core.component.ItsuSiteConfigProperties;
-import com.itsu.core.component.mvc.CrossOriginFilter;
-import com.itsu.core.component.mvc.ExceptionThrowFilter;
-import com.itsu.core.component.mvc.MaskJackson2HttpMessageConverter;
-import com.itsu.core.component.mvc.RequestInterceptor;
+import com.itsu.core.component.mvc.*;
+import com.itsu.core.util.SystemUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,10 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
+@DependsOn("springUtil")
 public class WebMvcConfiguration implements InitializingBean {
 
     @Bean
-    public WebMvcConfigurer webMvcConfigurer(ItsuSiteConfigProperties kProperties) {
+    public WebMvcConfigurer webMvcConfigurer(ItsuSiteConfigProperties configProperties) {
         return new WebMvcConfigurer() {
 
             /**
@@ -39,7 +41,7 @@ public class WebMvcConfiguration implements InitializingBean {
              */
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
-                registry.addInterceptor(new RequestInterceptor(kProperties.getName())).addPathPatterns("/**");
+                registry.addInterceptor(new RequestInterceptor(configProperties.getName())).addPathPatterns("/**");
             }
 
             // /**
@@ -59,10 +61,17 @@ public class WebMvcConfiguration implements InitializingBean {
              */
             @Override
             public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-                MaskJackson2HttpMessageConverter jsonMessageConverter = new MaskJackson2HttpMessageConverter();
-                jsonMessageConverter
-                        .setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
-                converters.add(0, jsonMessageConverter);
+                ItsuSiteConfigProperties.Mask mask = configProperties.getMask();
+                if (mask.getType() == ItsuSiteConfigProperties.Mask.Type.SITE) {
+                    MaskJackson2HttpMessageConverter jsonMessageConverter = new MaskJackson2HttpMessageConverter();
+                    jsonMessageConverter
+                            .setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
+                    converters.add(0, jsonMessageConverter);
+                } else {
+                    MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
+                    jsonMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
+                    converters.add(0, jsonMessageConverter);
+                }
             }
 
         };
@@ -104,6 +113,9 @@ public class WebMvcConfiguration implements InitializingBean {
     @Autowired
     private DispatcherServlet servlet;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     /**
      * 抛出404异常
      *
@@ -112,6 +124,9 @@ public class WebMvcConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         servlet.setThrowExceptionIfNoHandlerFound(true);
+        if (SystemUtil.isMaskJackson()) {
+            objectMapper.setAnnotationIntrospector(new MaskIntrospector(SystemUtil.isMaskLog(), SystemUtil.isMaskResp()));
+        }
     }
 
 }
