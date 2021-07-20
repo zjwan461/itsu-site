@@ -50,16 +50,26 @@ itsu:
       login-url: /login
       logout-url: /logout
       logout-redirect: /
+      cache-enable: false
     show-config-model: true
     show-ioc-beans: true
     show-mvc-mapping: true
     login-aes-encrypt: false
     auto-create-db-table:
-      enable: true
+      enable: false
       type: update
-      init-data: true
+      init-data: false
     mask:
       log: true
+    api-exception-handler:
+      enable: true
+    global-param-check:
+      enable: true
+    access-token:
+      dynamic: true
+      back-up-token-num: 1
+      expire: 30m
+      type: MEMORY
 #itsu:
 #  site:
 #    auto-create-db-table:

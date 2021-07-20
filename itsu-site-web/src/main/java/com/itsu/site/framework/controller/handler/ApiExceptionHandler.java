@@ -6,10 +6,6 @@
  */
 package com.itsu.site.framework.controller.handler;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.itsu.core.component.dytoken.RefreshToken;
 import com.itsu.core.exception.CodeAbleException;
@@ -18,8 +14,6 @@ import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.sys.CodeConstant;
 import com.itsu.core.vo.sys.ErrorProperties;
-
-import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
@@ -33,6 +27,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ApiExceptionHandler implements ApiExceptionHandlerBase {
 
@@ -141,9 +139,6 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
         if (e instanceof CodeAbleException) {
             CodeAbleException ke = (CodeAbleException) e;
             return handleCodeAbleException(request, ke);
-        } else if (e instanceof DynamicTokenException) {
-            DynamicTokenException kde = (DynamicTokenException) e;
-            return handleDyException(request, kde);
         } else if (e instanceof AuthenticationException) {
             AuthenticationException ae = (AuthenticationException) e;
             return handleAuthenticationException(request, ae);

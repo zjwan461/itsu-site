@@ -49,7 +49,9 @@ public abstract class RefreshTokenAspect {
     @Autowired(required = false)
     private LocalTokenBlackList localTokenBlackList;
 
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.RestController) || @annotation(com.itsu.core.component.dytoken.RefreshToken)")
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || @annotation(org.springframework.web.bind.annotation.GetMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.DeleteMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.PutMapping) || @annotation(com.itsu.core.component.dytoken.RefreshToken)")
     public void rule() {
     }
 

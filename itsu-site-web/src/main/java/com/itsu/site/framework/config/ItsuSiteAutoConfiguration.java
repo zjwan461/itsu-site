@@ -116,7 +116,7 @@ public class ItsuSiteAutoConfiguration {
     @Bean
     @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true")
     @ConditionalOnMissingBean(RefreshTokenAspect.class)
-    public RefreshTokenAspect refreshTokenAspect() {
+    public RefreshTokenAspectAdaptor refreshTokenAspect() {
         return new RefreshTokenAspectAdaptor();
     }
 
@@ -151,7 +151,7 @@ public class ItsuSiteAutoConfiguration {
     @ConditionalOnProperty(name = "itsu.site.api-exception-handler.enable", havingValue = "true")
     @ConditionalOnMissingBean(ApiExceptionHandlerBase.class)
     @DependsOn("errorProperties")
-    public ApiExceptionHandlerBase apiExceptionHandler() {
+    public ApiExceptionHandler apiExceptionHandler() {
         return new ApiExceptionHandler();
     }
 
