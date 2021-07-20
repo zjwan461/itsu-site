@@ -66,7 +66,6 @@ import java.util.Map;
 @EnableAsync
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
 @Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
-@AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
 public class ItsuSiteAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ItsuSiteAutoConfiguration.class);

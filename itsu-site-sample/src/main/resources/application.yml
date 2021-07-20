@@ -66,10 +66,13 @@ itsu:
     global-param-check:
       enable: true
     access-token:
-      dynamic: true
+      dynamic: false
       back-up-token-num: 1
       expire: 30m
       type: MEMORY
+#    mapper-cache:
+#      cache-type: MEMORY
+#      cache-time: 30
 #itsu:
 #  site:
 #    auto-create-db-table:

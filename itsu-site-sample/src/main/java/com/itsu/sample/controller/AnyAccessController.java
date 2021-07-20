@@ -7,6 +7,8 @@ import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.security.AccessStrategy;
 import com.itsu.core.component.security.StrategyEnum;
+import com.itsu.core.entity.Account;
+import com.itsu.core.vo.JsonResult;
 import com.itsu.sample.mapper.TestMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,15 +28,6 @@ import java.util.Map;
 @RequestMapping("/api")
 @AccessStrategy(StrategyEnum.ANY)
 public class AnyAccessController {
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    private boolean enable = true;
 
     @Resource
     private TestMapper mapper;
@@ -57,7 +51,7 @@ public class AnyAccessController {
         return handlerMethod.toString();
     }
 
-    @GetMapping("/demo")
+    @GetMapping("/db-version")
     public String idx() {
         return "my db version is " + mapper.selectDBVersion();
     }
@@ -73,5 +67,10 @@ public class AnyAccessController {
         Map<String, Object> map = BeanUtil.beanToMap(siteConfig);
         map.putAll(BeanUtil.beanToMap(SpringUtil.getBean(TransferSiteConfigProperties.class)));
         return map;
+    }
+
+    @GetMapping("/listAccount")
+    public JsonResult<List<Account>> listAccount() {
+        return JsonResult.ok(mapper.selectAccounts());
     }
 }

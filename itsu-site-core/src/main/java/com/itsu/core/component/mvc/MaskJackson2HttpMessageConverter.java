@@ -39,16 +39,35 @@ public class MaskJackson2HttpMessageConverter extends MappingJackson2HttpMessage
             map.put("msg", jsonResult.getMsg());
             try {
                 if (SystemUtil.isMaskLog()) {
-                    map.put("data", MaskUtil.doLogMask(data));
-                    log.info("write response body data: {}", JSONUtil.toJsonStr(map));
+                    if (SystemUtil.isSimpleObject(data)) {
+                        Mask annotation = data.getClass().getAnnotation(Mask.class);
+                        if (annotation != null && annotation.logEnable()) {
+                            map.put("data", annotation.value());
+                        } else {
+                            map.put("data", JSONUtil.toJsonStr(data));
+                        }
+                        log.info("write response body data: {}", JSONUtil.toJsonStr(map));
+                    } else {
+                        map.put("data", MaskUtil.doLogMask(data));
+                        log.info("write response body data: {}", JSONUtil.toJsonStr(map));
+                    }
                 } else {
                     log.info("write response body data: {}", JSONUtil.toJsonStr(jsonResult));
                 }
                 if (SystemUtil.isMaskResp()) {
-                    map.put("data", MaskUtil.doRespMask(data));
+                    if (SystemUtil.isSimpleObject(object)) {
+                        Mask annotation = object.getClass().getAnnotation(Mask.class);
+                        if (annotation != null && annotation.respEnable()) {
+                            map.put("data", annotation.value());
+                        } else {
+                            map.put("data", JSONUtil.toJsonStr(object));
+                        }
+                    } else {
+                        map.put("data", MaskUtil.doRespMask(data));
+                    }
                     object = map;
                 }
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 log.warn("error to execute doLogMask/doRespMask, error message: {}", e.getMessage());
             }
         } else {
@@ -62,13 +81,13 @@ public class MaskJackson2HttpMessageConverter extends MappingJackson2HttpMessage
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         Object object = super.read(type, contextClass, inputMessage);
+        Map map;
         if (object instanceof ReqObjBase) {
-            Map map;
             if (SystemUtil.isMaskLog()) {
                 try {
                     map = MaskUtil.doLogMask(object);
                     log.info("read request body data: {}", JSONUtil.toJsonStr(map));
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
                     log.warn("error to execute doLogMask/doRespMask, error message: {}", e.getMessage());
                 }
             } else {
@@ -76,7 +95,21 @@ public class MaskJackson2HttpMessageConverter extends MappingJackson2HttpMessage
             }
         } else {
             log.warn("read data type is not instanceof {}", ReqObjBase.class.getName());
-            log.info("read request body data: {}", JSONUtil.toJsonStr(object));
+            if (SystemUtil.isSimpleObject(object)) {
+                Mask annotation = object.getClass().getAnnotation(Mask.class);
+                if (annotation != null && annotation.logEnable()) {
+                    log.info("read request body data: {}", annotation.value());
+                } else {
+                    log.info("read request body data: {}", JSONUtil.toJsonStr(object));
+                }
+            } else {
+                try {
+                    map = MaskUtil.doLogMask(object);
+                    log.info("read request body data: {}", JSONUtil.toJsonStr(map));
+                } catch (Exception e) {
+                    log.warn("error to execute doLogMask/doRespMask, error message: {}", e.getMessage());
+                }
+            }
         }
         return object;
     }

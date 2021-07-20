@@ -1,5 +1,6 @@
 package com.itsu.core.component.mvc;
 
+import com.itsu.core.util.AopTargetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
@@ -41,20 +42,20 @@ public class SpringMvcHelper {
         return null;
     }
 
-    public Object getHandlerMethodBean(HttpServletRequest request) {
+    public Object getHandlerMethodBean(HttpServletRequest request) throws Exception {
         HandlerMethod handlerMethod = this.getHandlerMethod(request);
         if (handlerMethod == null) {
             return null;
         }
-        return handlerMethod.getBean();
+        return AopTargetUtil.getTarget(handlerMethod.getBean());
     }
 
-    public Class getHandlerMethodBeanType(HttpServletRequest request) {
+    public Class getHandlerMethodBeanType(HttpServletRequest request) throws Exception {
         Object bean = this.getHandlerMethodBean(request);
         return bean == null ? null : bean.getClass();
     }
 
-    public Annotation[] getHandlerMethodBeanAnnotations(HttpServletRequest request) {
+    public Annotation[] getHandlerMethodBeanAnnotations(HttpServletRequest request) throws Exception {
         Class clazz = this.getHandlerMethodBeanType(request);
         if (clazz == null) {
             return null;
@@ -62,7 +63,7 @@ public class SpringMvcHelper {
         return clazz.getAnnotations();
     }
 
-    public Annotation getHandlerMethodBeanAnnotation(HttpServletRequest request, Class<? extends Annotation> annotationClass) {
+    public Annotation getHandlerMethodBeanAnnotation(HttpServletRequest request, Class<? extends Annotation> annotationClass) throws Exception {
         Class clazz = this.getHandlerMethodBeanType(request);
         if (clazz == null) {
             return null;

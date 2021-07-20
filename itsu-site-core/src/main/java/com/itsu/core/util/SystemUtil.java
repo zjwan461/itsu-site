@@ -16,9 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class SystemUtil {
 
@@ -98,7 +96,7 @@ public final class SystemUtil {
                 continue;
             }
             field.setAccessible(true);
-            if (hasChildNode(field) && field.get(reqObj) != null) {
+            if (isNotSimpleField(field) && field.get(reqObj) != null) {
                 return checkReqObj(regEx, field.get(reqObj));
             } else {
                 Object object = field.get(reqObj);
@@ -117,23 +115,56 @@ public final class SystemUtil {
     }
 
     public static List<Field> getAllSiteFields(Object reqObj, List<Field> fields) throws Exception {
-        if (!(reqObj instanceof ReqObjBase)) {
+        try {
+            if (Object.class.getName().equals(reqObj.getClass().getName())) {
+                return fields;
+            } else {
+                Field[] declaredFields = reqObj.getClass().getDeclaredFields();
+                fields.addAll(Arrays.asList(declaredFields));
+                return getAllSiteFields(reqObj.getClass().getSuperclass().newInstance(), fields);
+            }
+        } catch (Exception e) {
             return fields;
-        } else {
-            Field[] declaredFields = reqObj.getClass().getDeclaredFields();
-            fields.addAll(Arrays.asList(declaredFields));
-            return getAllSiteFields(reqObj.getClass().getSuperclass().newInstance(), fields);
         }
 
     }
 
-    private static boolean hasChildNode(Field field) {
-        return !String.class.isAssignableFrom(field.getType()) && !Integer.class.isAssignableFrom(field.getType())
+    /**
+     * 8种基本数据类型和其包装类以及String以及一些常用集合接口的实现
+     *
+     * @param field
+     * @return
+     */
+    public static boolean isNotSimpleField(Field field) {
+        return !List.class.isAssignableFrom(field.getType()) && !Set.class.isAssignableFrom(field.getType()) && !Map.class.isAssignableFrom(field.getType())
+                && !String.class.isAssignableFrom(field.getType()) && !Integer.class.isAssignableFrom(field.getType())
                 && !Double.class.isAssignableFrom(field.getType()) && !Float.class.isAssignableFrom(field.getType())
-                && !Boolean.class.isAssignableFrom(field.getType()) && boolean.class != field.getType()
-                && char.class != field.getType() && void.class != field.getType() && int.class != field.getType()
+                && !Boolean.class.isAssignableFrom(field.getType()) && !Character.class.isAssignableFrom(field.getType())
+                && !Long.class.isAssignableFrom(field.getType()) && !Byte.class.isAssignableFrom(field.getType())
+                && !Short.class.isAssignableFrom(field.getType()) && boolean.class != field.getType()
+                && char.class != field.getType() && int.class != field.getType()
                 && float.class != field.getType() && double.class != field.getType() && long.class != field.getType()
                 && byte.class != field.getType() && short.class != field.getType();
+    }
+
+    public static boolean isSimpleField(Field field) {
+        return !isNotSimpleField(field);
+    }
+
+    public static boolean isNotSimpleObject(Object object) {
+        return !List.class.isAssignableFrom(object.getClass()) && !Set.class.isAssignableFrom(object.getClass()) && !Map.class.isAssignableFrom(object.getClass())
+                && !String.class.isAssignableFrom(object.getClass()) && !Integer.class.isAssignableFrom(object.getClass())
+                && !Double.class.isAssignableFrom(object.getClass()) && !Float.class.isAssignableFrom(object.getClass())
+                && !Boolean.class.isAssignableFrom(object.getClass()) && !Character.class.isAssignableFrom(object.getClass())
+                && !Long.class.isAssignableFrom(object.getClass()) && !Byte.class.isAssignableFrom(object.getClass())
+                && !Short.class.isAssignableFrom(object.getClass()) && boolean.class != object.getClass()
+                && char.class != object.getClass() && int.class != object.getClass()
+                && float.class != object.getClass() && double.class != object.getClass() && long.class != object.getClass()
+                && byte.class != object.getClass() && short.class != object.getClass();
+    }
+
+    public static boolean isSimpleObject(Object object) {
+        return !isNotSimpleObject(object);
     }
 
     /**
