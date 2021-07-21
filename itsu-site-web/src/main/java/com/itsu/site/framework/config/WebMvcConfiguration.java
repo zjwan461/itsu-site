@@ -13,6 +13,7 @@ import com.itsu.core.util.SystemUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -68,7 +68,7 @@ public class WebMvcConfiguration implements InitializingBean {
                             .setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
                     converters.add(0, jsonMessageConverter);
                 } else {
-                    MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
+                    LogJackson2HttpMessageConverter jsonMessageConverter = new LogJackson2HttpMessageConverter();
                     jsonMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
                     converters.add(0, jsonMessageConverter);
                 }
@@ -116,8 +116,11 @@ public class WebMvcConfiguration implements InitializingBean {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private MaskIntrospector maskIntrospector;
+
     /**
-     * 抛出404异常
+     * SpringMvc的一些个性化配置
      *
      * @throws Exception
      */
@@ -125,8 +128,14 @@ public class WebMvcConfiguration implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         servlet.setThrowExceptionIfNoHandlerFound(true);
         if (SystemUtil.isMaskJackson()) {
-            objectMapper.setAnnotationIntrospector(new MaskIntrospector(SystemUtil.isMaskLog(), SystemUtil.isMaskResp()));
+            objectMapper.setAnnotationIntrospector(maskIntrospector);
         }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MaskIntrospector.class)
+    public MaskIntrospector maskIntrospector() {
+        return new MaskIntrospector(SystemUtil.isMaskLog(), SystemUtil.isMaskResp());
     }
 
 }

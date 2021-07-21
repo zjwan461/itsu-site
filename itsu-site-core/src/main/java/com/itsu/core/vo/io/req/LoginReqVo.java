@@ -1,6 +1,7 @@
 package com.itsu.core.vo.io.req;
 
 import com.itsu.core.component.mvc.Mask;
+import com.itsu.core.component.mvc.MaskField;
 import com.itsu.core.entity.Account;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ public class LoginReqVo implements ReqObjBase<Account> {
 
     @Mask
     @NotBlank
+    @MaskField
     private String password;
 
     public String getUsername() {

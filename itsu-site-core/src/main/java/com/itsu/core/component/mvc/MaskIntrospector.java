@@ -21,10 +21,6 @@ public class MaskIntrospector extends JacksonAnnotationIntrospector {
 
     @Override
     public boolean isAnnotationBundle(Annotation ann) {
-        if (ann.annotationType().equals(MaskField.class)) {
-            return false;
-        } else
-            return super.isAnnotationBundle(ann);
-
+        return super.isAnnotationBundle(ann);
     }
 }
