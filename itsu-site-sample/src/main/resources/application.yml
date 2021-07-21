@@ -56,9 +56,9 @@ itsu:
     show-mvc-mapping: true
     login-aes-encrypt: false
     auto-create-db-table:
-      enable: false
+      enable: true
       type: update
-      init-data: false
+      init-data: true
     mask:
       log: true
     api-exception-handler:

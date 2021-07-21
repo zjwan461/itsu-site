@@ -3,6 +3,7 @@ package com.itsu.core.api;
 import com.itsu.core.exception.CodeAbleException;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.io.req.LoginReqVo;
+import com.itsu.core.vo.io.resp.LoginRespVo;
 
 /**
  * @author Jerry Su
@@ -10,8 +11,8 @@ import com.itsu.core.vo.io.req.LoginReqVo;
  */
 public interface AccountService {
 
-    JsonResult login(LoginReqVo loginReqVo) throws CodeAbleException;
+    JsonResult<LoginRespVo> login(LoginReqVo loginReqVo) throws CodeAbleException;
 
-    JsonResult logout() throws CodeAbleException;
+    JsonResult<LoginRespVo> logout() throws CodeAbleException;
 
 }

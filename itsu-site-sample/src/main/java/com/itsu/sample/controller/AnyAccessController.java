@@ -9,6 +9,7 @@ import com.itsu.core.component.security.AccessStrategy;
 import com.itsu.core.component.security.StrategyEnum;
 import com.itsu.core.entity.Account;
 import com.itsu.core.vo.JsonResult;
+import com.itsu.core.vo.sys.ErrorProperties;
 import com.itsu.sample.mapper.TestMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,9 @@ public class AnyAccessController {
 
     @Resource
     private SpringMvcHelper springMvcHelper;
+
+    @Resource
+    private ErrorProperties errorProperties;
 
 
     @GetMapping("/list")
@@ -72,5 +76,11 @@ public class AnyAccessController {
     @GetMapping("/listAccount")
     public JsonResult<List<Account>> listAccount() {
         return JsonResult.ok(mapper.selectAccounts());
+    }
+
+
+    @GetMapping("/errorCodeMapping")
+    public JsonResult<ErrorProperties> getCodeMapping() {
+        return JsonResult.ok(errorProperties);
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itsu.site.framework.mapper.RoleMapper">
+
+    <delete id="deleteRolePermission" parameterType="java.lang.Long">
+        delete
+        from td_account_role
+        where account_id = #{roleId}
+          and role_id = #{permissionId}
+    </delete>
+
+    <insert id="addRolePermission" parameterType="java.lang.Long">
+        insert into td_account_role (role_id, account_id)
+        values (#{roleId}, #{accountId})
+    </insert>
+</mapper>

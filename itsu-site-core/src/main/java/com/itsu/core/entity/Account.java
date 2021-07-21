@@ -22,7 +22,7 @@ public class Account extends LoginObject implements EntityBase<LoginRespVo>, Ser
     private static final long serialVersionUID = -8560602221587829116L;
 
     @TableId(type = IdType.ASSIGN_ID)
-    private String accountId;
+    private Long accountId;
 
     @TableField
     private String username;
@@ -39,11 +39,11 @@ public class Account extends LoginObject implements EntityBase<LoginRespVo>, Ser
     @TableField
     private String lastLoginTime;
 
-    public String getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 

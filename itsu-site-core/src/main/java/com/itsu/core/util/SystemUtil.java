@@ -258,4 +258,12 @@ public final class SystemUtil {
     public static boolean isMaskJackson() {
         return getItsuSiteConfigProperties().getMask().getType() == ItsuSiteConfigProperties.Mask.Type.JACKSON;
     }
+
+    public static Integer getHashIterations() {
+        return getItsuSiteConfigProperties().getSecurityConfig().getHashIterations();
+    }
+
+    public static String getHashName() {
+        return getItsuSiteConfigProperties().getSecurityConfig().getHashAlgorithmName();
+    }
 }

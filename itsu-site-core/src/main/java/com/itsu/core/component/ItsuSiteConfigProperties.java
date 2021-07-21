@@ -49,7 +49,7 @@ public class ItsuSiteConfigProperties {
 
     private ScriptProcess scriptProcess = new ScriptProcess();
 
-    private String customErrorProperties;
+    private String customErrorProperties = "code.properties";
 
     private AutoCreateDbTable autoCreateDbTable = new AutoCreateDbTable();
 

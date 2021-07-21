@@ -3,6 +3,7 @@ package com.itsu.site.framework.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.itsu.core.entity.Account;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Set;
 
@@ -13,8 +14,11 @@ import java.util.Set;
 @Mapper
 public interface AccountMapper extends BaseMapper<Account> {
 
-	Set<String> getRolesByUsername(String username);
+    Set<String> getRolesByUsername(String username);
 
-	Set<String> getPermissionsByUsername(String username);
+    Set<String> getPermissionsByUsername(String username);
 
+    void deleteAccountRole(@Param("accountId") Long accountId, @Param("roleId") Long roleId);
+
+    void addAccountRole(@Param("accountId") Long accountId, @Param("roleId") Long roleId);
 }
