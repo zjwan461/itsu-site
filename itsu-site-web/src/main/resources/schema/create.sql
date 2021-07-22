@@ -18,7 +18,7 @@ CREATE TABLE `td_account_role`
 CREATE TABLE `td_role`
 (
     `role_id` bigint(20) NOT NULL PRIMARY KEY,
-    `name`    varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+    `name`    varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 );
 
 CREATE TABLE `td_role_permission`
@@ -31,5 +31,5 @@ CREATE TABLE `td_role_permission`
 CREATE TABLE `td_permission`
 (
     `permission_id` bigint(20) NOT NULL PRIMARY KEY,
-    `name`          varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+    `name`          varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 );

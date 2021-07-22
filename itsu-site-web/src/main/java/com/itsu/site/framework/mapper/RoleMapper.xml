@@ -5,12 +5,41 @@
     <delete id="deleteRolePermission" parameterType="java.lang.Long">
         delete
         from td_account_role
-        where account_id = #{roleId}
-          and role_id = #{permissionId}
+        <where>
+            1 = 1
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="permissionId != null">
+                and permissionId = #{permissionId}
+            </if>
+        </where>
     </delete>
 
     <insert id="addRolePermission" parameterType="java.lang.Long">
         insert into td_account_role (role_id, account_id)
         values (#{roleId}, #{accountId})
     </insert>
+
+    <resultMap id="rolePermissions" type="com.itsu.core.entity.Role">
+        <id column="role_id" property="roleId"/>
+        <result column="name" property="name"/>
+        <collection property="permissions" ofType="com.itsu.core.entity.Permission" javaType="java.util.List">
+            <id column="permission_id" property="permissionId"/>
+            <result column="name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRolePermissions" resultMap="rolePermissions">
+        select a.role_id roleId, a.name roleName, c.permission_id permissionId, c.name permissionName
+        from td_role a
+        left join td_role_permission b on a.role_id = b.role_id
+        left join td_permission c on b.permission_id = c.permission_id
+        <where>
+            1 = 1
+            <if test="${roleId != null}">
+                and a.roleId = #{roleId}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -8,6 +8,7 @@ import com.itsu.core.vo.io.resp.LoginRespVo;
 import com.itsu.core.vo.sys.LoginObject;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Jerry Su
@@ -38,6 +39,9 @@ public class Account extends LoginObject implements EntityBase<LoginRespVo>, Ser
 
     @TableField
     private String lastLoginTime;
+
+    @TableField(exist = false)
+    private List<Role> roles;
 
     public Long getAccountId() {
         return accountId;
@@ -85,6 +89,14 @@ public class Account extends LoginObject implements EntityBase<LoginRespVo>, Ser
 
     public void setLastLoginTime(String lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.itsu.core.entity.Account;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,4 +22,6 @@ public interface AccountMapper extends BaseMapper<Account> {
     void deleteAccountRole(@Param("accountId") Long accountId, @Param("roleId") Long roleId);
 
     void addAccountRole(@Param("accountId") Long accountId, @Param("roleId") Long roleId);
+
+    List<Account> getAccountRolesList(@Param("accountId") Long accountId);
 }

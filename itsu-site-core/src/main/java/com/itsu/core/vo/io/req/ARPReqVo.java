@@ -28,6 +28,8 @@ public class ARPReqVo implements ReqObjBase {
 
     private String permissionName;
 
+    private boolean cascade;
+
     public Long getAccountId() {
         return accountId;
     }
@@ -106,6 +108,14 @@ public class ARPReqVo implements ReqObjBase {
 
     public void setPermissionName(String permissionName) {
         this.permissionName = permissionName;
+    }
+
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
     }
 
     @Override

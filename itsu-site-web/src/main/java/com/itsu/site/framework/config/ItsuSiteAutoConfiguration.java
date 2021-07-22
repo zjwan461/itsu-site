@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import com.itsu.core.api.ARPService;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.TransferSiteConfigProperties;
@@ -28,10 +29,12 @@ import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.component.GenerateHtml;
 import com.itsu.site.framework.component.RefreshTokenAspectAdaptor;
 import com.itsu.site.framework.component.ScriptProcess;
+import com.itsu.site.framework.controller.ARPController;
 import com.itsu.site.framework.controller.AccountLoginController;
 import com.itsu.site.framework.controller.FilterErrorController;
 import com.itsu.site.framework.controller.handler.ApiExceptionHandler;
 import com.itsu.site.framework.controller.handler.ApiExceptionHandlerBase;
+import com.itsu.site.framework.service.ARPServiceImpl;
 import com.itsu.site.framework.service.AccountServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,6 +167,11 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
+    public ARPController arpController() {
+        return new ARPController();
+    }
+
+    @Bean
     public FilterErrorController filterErrorController() {
         return new FilterErrorController();
     }
@@ -172,6 +180,12 @@ public class ItsuSiteAutoConfiguration {
     @ConditionalOnMissingBean(AccountService.class)
     public AccountService accountService() {
         return new AccountServiceImpl();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ARPService.class)
+    public ARPService arpService() {
+        return new ARPServiceImpl();
     }
 
     @Bean

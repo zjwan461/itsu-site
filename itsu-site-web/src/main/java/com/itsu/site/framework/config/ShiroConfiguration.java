@@ -80,6 +80,7 @@ public class ShiroConfiguration {
         ItsuSiteConfigProperties.SecurityConfig securityConfig = kProperties.getSecurityConfig();
         chainDefinition.addPathDefinition(securityConfig.getLogoutUrl(), "logout");
         chainDefinition.addPathDefinition(securityConfig.getAuthenUrlPrefix(), "jwt");
+        chainDefinition.addPathDefinition("/arp/**", "jwt");
         chainDefinition.addPathDefinition(securityConfig.getNoAuthenUrlPrefix(), "anon");
         chainDefinition.addPathDefinition(securityConfig.getLoginUrl(), "anon");
         return chainDefinition;

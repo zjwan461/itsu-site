@@ -59,11 +59,13 @@ public class AccountServiceImpl implements AccountService {
         ItsuSiteConfigProperties.AccessToken accessTokenConfig = configProperties.getAccessToken();
         LoginRespVo data = new LoginRespVo();
         data.setAccessToken(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
-        List<String> backUpTokens = new ArrayList<>();
-        for (int i = 0; i < accessTokenConfig.getBackUpTokenNum(); i++) {
-            backUpTokens.add(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
+        if (SystemUtil.isAccessTokenDynamic()) {
+            List<String> backUpTokens = new ArrayList<>();
+            for (int i = 0; i < accessTokenConfig.getBackUpTokenNum(); i++) {
+                backUpTokens.add(JWTUtil.sign(user.getUsername(), user.getPassword(), TimeUtil.toMillis(accessTokenConfig.getExpire())));
+            }
+            data.setBackUpTokens(backUpTokens);
         }
-        data.setBackUpTokens(backUpTokens);
         return data;
     }
 

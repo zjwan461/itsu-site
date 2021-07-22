@@ -10,23 +10,27 @@ import com.itsu.core.vo.io.resp.ARPRespVo;
  */
 public interface ARPService {
 
-    JsonResult<ARPRespVo> addAccount(ARPReqVo arpReqVo) throws Exception;
+    JsonResult<ARPRespVo> addAccount(ARPReqVo arpReqVo);
 
     JsonResult<ARPRespVo> addRole(ARPReqVo arpReqVo);
+
+    JsonResult<ARPRespVo> addPermission(ARPReqVo arpReqVo);
 
     JsonResult<ARPRespVo> addAccountRole(ARPReqVo arpReqVo);
 
     JsonResult<ARPRespVo> addRolePermission(ARPReqVo arpReqVo);
 
-    JsonResult<ARPRespVo> deleteAccount(Long accountId);
+    JsonResult<ARPRespVo> deleteAccount(ARPReqVo accountId);
 
-    JsonResult<ARPRespVo> deleteRole(Long roleId);
+    JsonResult<ARPRespVo> deleteRole(ARPReqVo roleId);
 
-    JsonResult<ARPRespVo> deletePermission(Long permissionId);
+    JsonResult<ARPRespVo> deletePermission(ARPReqVo permissionId);
 
     JsonResult<ARPRespVo> deleteAccountRole(ARPReqVo arpReqVo);
 
     JsonResult<ARPRespVo> deleteRolePermission(ARPReqVo arpReqVo);
 
-    JsonResult<ARPRespVo> listRolePermissionTree();
+    JsonResult<ARPRespVo> listRolePermissionTree(Long roleId);
+
+    JsonResult<ARPRespVo> listAccountRoleTree(Long accountId);
 }

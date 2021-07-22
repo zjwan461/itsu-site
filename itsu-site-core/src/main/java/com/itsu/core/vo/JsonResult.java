@@ -1,5 +1,6 @@
 package com.itsu.core.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.itsu.core.component.mvc.MaskField;
@@ -116,5 +117,10 @@ public class JsonResult<T> implements Serializable {
 
     public void setRefreshTokens(List<String> refreshTokens) {
         this.refreshTokens = refreshTokens;
+    }
+
+    @JsonIgnore
+    public boolean isOK() {
+        return this.code == 00000;
     }
 }

@@ -13,6 +13,6 @@ public interface AccountService {
 
     JsonResult<LoginRespVo> login(LoginReqVo loginReqVo) throws CodeAbleException;
 
-    JsonResult<LoginRespVo> logout() throws CodeAbleException;
+    JsonResult logout() throws CodeAbleException;
 
 }
