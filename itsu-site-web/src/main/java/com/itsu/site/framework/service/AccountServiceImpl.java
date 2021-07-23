@@ -1,9 +1,11 @@
 package com.itsu.site.framework.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.component.event.LoginEvent;
 import com.itsu.core.entity.Account;
 import com.itsu.core.exception.CodeAbleException;
 import com.itsu.core.shiro.AesUsernamePasswordToken;
@@ -47,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
         //执行shiro realm认证方法
         SecurityUtils.getSubject().login(token);
         LoginRespVo data = getLoginRespVo(token);
+        SpringUtil.getApplicationContext().publishEvent(new LoginEvent(loginReqVo.getUsername() + "登录"));
         return JsonResult.ok(data);
     }
 

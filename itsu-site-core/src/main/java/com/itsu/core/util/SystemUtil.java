@@ -10,6 +10,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.ItsuSiteConfigProperties;
+import com.itsu.core.component.event.LoginEvent;
 import com.itsu.core.vo.io.req.ReqObjBase;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -265,5 +266,9 @@ public final class SystemUtil {
 
     public static String getHashName() {
         return getItsuSiteConfigProperties().getSecurityConfig().getHashAlgorithmName();
+    }
+
+    public static void pushLoginEvent(LoginEvent loginEvent) {
+        SpringUtil.getApplicationContext().publishEvent(loginEvent);
     }
 }
