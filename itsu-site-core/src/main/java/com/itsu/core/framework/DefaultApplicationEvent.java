@@ -1,35 +1,35 @@
 package com.itsu.core.framework;
 
+import com.itsu.core.util.LogUtil;
+
 /**
  * @author Jerry.Su
  * @Date 2021/7/19 11:38
  */
 public enum DefaultApplicationEvent implements ApplicationEvent {
 
-//    private static final Logger logger = LoggerFactory.getLogger(DefaultApplicationEvent.class);
-
     SET {
         @Override
-        public Object publish(String key, Object value) {
-            return null;
+        public void handle(String key, Object value) {
+            LogUtil.debug(DefaultApplicationEvent.class, "key:{}, value:{} is set to ApplicationContext", key, value);
         }
     },
     GET {
         @Override
-        public Object publish(String key, Object value) {
-            return null;
+        public void handle(String key, Object value) {
+            LogUtil.debug(DefaultApplicationEvent.class, "get value:{} of key:{} from ApplicationContext", key, value);
         }
     },
     REMOVE {
         @Override
-        public Object publish(String key, Object value) {
-            return null;
+        public void handle(String key, Object value) {
+            LogUtil.debug(DefaultApplicationEvent.class, "remove key:{}, value:{} from ApplicationContext", key, value);
         }
     },
     CLEAN {
         @Override
-        public Object publish(String key, Object value) {
-            return null;
+        public void handle(String key, Object value) {
+            LogUtil.debug(DefaultApplicationEvent.class, "clean all content from ApplicationContext");
         }
     }
 

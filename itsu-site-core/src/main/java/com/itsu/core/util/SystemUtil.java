@@ -271,4 +271,8 @@ public final class SystemUtil {
     public static void pushLoginEvent(LoginEvent loginEvent) {
         SpringUtil.getApplicationContext().publishEvent(loginEvent);
     }
+
+    public static boolean isSingleLoginEnable() {
+        return getItsuSiteConfigProperties().getSecurityConfig().isSingleLogin();
+    }
 }

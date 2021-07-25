@@ -18,13 +18,13 @@ public interface ApplicationContext {
 
     void clean();
 
-    Object publishSet(String key, Object value);
+    void publishSet(String key, Object value);
 
-    Object publishGet(String key, Object value);
+    void publishGet(String key, Object value);
 
-    Object publishRemove(String key, Object value);
+    void publishRemove(String key, Object value);
 
-    Object publishClean(String key, Object value);
+    void publishClean(String key, Object value);
 
     void cleanUp();
 }

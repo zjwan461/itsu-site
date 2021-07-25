@@ -120,6 +120,8 @@
 
     <logger name="com.itsu" level="debug"/>
 
+    <logger name="org.springframework.jdbc" level="debug"/>
+
     <root level="${ROOT_LEVEL}">
         <appender-ref ref="async_stdout"/>
         <appender-ref ref="async_info"/>

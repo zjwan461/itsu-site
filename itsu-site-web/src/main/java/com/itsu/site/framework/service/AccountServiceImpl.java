@@ -1,7 +1,7 @@
 package com.itsu.site.framework.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
@@ -20,8 +20,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jerry Su
@@ -49,8 +48,21 @@ public class AccountServiceImpl implements AccountService {
         //执行shiro realm认证方法
         SecurityUtils.getSubject().login(token);
         LoginRespVo data = getLoginRespVo(token);
-        SpringUtil.getApplicationContext().publishEvent(new LoginEvent(loginReqVo.getUsername() + "登录"));
+//        SpringUtil.getApplicationContext().publishEvent(new LoginEvent(loginReqVo.getUsername() + "登录"));
+        Set<String> tokens = new HashSet<>();
+        tokens.add(data.getAccessToken());
+        if (CollUtil.isNotEmpty(data.getBackUpTokens())) {
+            tokens.addAll(data.getBackUpTokens());
+        }
+        pushLoginEvent(loginReqVo.getUsername(), tokens);
         return JsonResult.ok(data);
+    }
+
+    protected void pushLoginEvent(String username, Set<String> tokens) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        map.put("tokens", tokens);
+        SystemUtil.pushLoginEvent(new LoginEvent(map));
     }
 
     protected LoginRespVo getLoginRespVo(UsernamePasswordToken token) {

@@ -6,5 +6,5 @@ package com.itsu.core.framework;
  */
 public interface ApplicationEvent {
 
-    Object publish(String key, Object value);
+    void handle(String key, Object value);
 }

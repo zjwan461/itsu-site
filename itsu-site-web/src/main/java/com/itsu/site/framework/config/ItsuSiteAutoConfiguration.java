@@ -13,7 +13,7 @@ import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
-import com.itsu.core.component.event.LoginListener;
+import com.itsu.core.component.event.listener.LoginListener;
 import com.itsu.core.component.mvc.CrossOriginFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;

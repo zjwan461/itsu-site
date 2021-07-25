@@ -14,7 +14,7 @@ public class DefaultApplicationContext implements ApplicationContext {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultApplicationContext.class);
 
-    private static final ConcurrentHashMap<String, Object> applicationCache = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Object> applicationCache = null;
 
     private static DefaultApplicationContext dac;
 
@@ -29,6 +29,7 @@ public class DefaultApplicationContext implements ApplicationContext {
 
     @Override
     public void init() {
+        applicationCache = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -69,28 +70,28 @@ public class DefaultApplicationContext implements ApplicationContext {
 
     @Override
     public synchronized void clean() {
-        publishClean(null, null);
         applicationCache.clear();
+        publishClean(null, null);
     }
 
     @Override
-    public Object publishSet(String key, Object value) {
-        return DefaultApplicationEvent.SET.publish(key, value);
+    public void publishSet(String key, Object value) {
+        DefaultApplicationEvent.SET.handle(key, value);
     }
 
     @Override
-    public Object publishGet(String key, Object value) {
-        return DefaultApplicationEvent.GET.publish(key, value);
+    public void publishGet(String key, Object value) {
+        DefaultApplicationEvent.GET.handle(key, value);
     }
 
     @Override
-    public Object publishRemove(String key, Object value) {
-        return DefaultApplicationEvent.REMOVE.publish(key, value);
+    public void publishRemove(String key, Object value) {
+        DefaultApplicationEvent.REMOVE.handle(key, value);
     }
 
     @Override
-    public Object publishClean(String key, Object value) {
-        return DefaultApplicationEvent.CLEAN.publish(null, null);
+    public void publishClean(String key, Object value) {
+        DefaultApplicationEvent.CLEAN.handle(null, null);
     }
 
     @PreDestroy
