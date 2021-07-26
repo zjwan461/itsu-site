@@ -13,10 +13,7 @@ import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
-import com.itsu.core.component.event.listener.DefaultLoginListener;
-import com.itsu.core.component.event.listener.DefaultLogoutListener;
-import com.itsu.core.component.event.listener.LoginListener;
-import com.itsu.core.component.event.listener.LogoutListener;
+import com.itsu.core.component.event.listener.*;
 import com.itsu.core.component.event.schedue.ApplicationContextCleaner;
 import com.itsu.core.component.mvc.CrossOriginFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
@@ -129,7 +126,6 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "itsu.site.access-token.dynamic", havingValue = "true")
-    @ConditionalOnExpression("'${itsu.site.access-token.type}'.equalsIgnoreCase('MEMORY')")
     @ConditionalOnMissingBean(LocalTokenBlackList.class)
     public LocalTokenBlackList localTokenBlackList() {
         return new LocalTokenBlackList();
@@ -207,8 +203,16 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(LoginListener.class)
-    public LoginListener loginListener() {
+    @ConditionalOnProperty(name = "itsu.site.security-config.cache-type", havingValue = "memory")
+    public LoginListener defaultLoginListener() {
         return new DefaultLoginListener();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LoginListener.class)
+    @ConditionalOnProperty(name = "itsu.site.security-config.cache-type", havingValue = "redis")
+    public LoginListener redisLoginListener() {
+        return new RedisLoginListener();
     }
 
     @Bean
@@ -219,8 +223,16 @@ public class ItsuSiteAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(LogoutListener.class)
-    public LogoutListener logoutListener() {
+    @ConditionalOnProperty(name = "itsu.site.security-config.cache-type", havingValue = "memory")
+    public LogoutListener defaultLogoutListener() {
         return new DefaultLogoutListener();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LogoutListener.class)
+    @ConditionalOnProperty(name = "itsu.site.security-config.cache-type", havingValue = "redis")
+    public LogoutListener redisLogoutListener() {
+        return new RedisLogoutListener();
     }
 
     @Bean
