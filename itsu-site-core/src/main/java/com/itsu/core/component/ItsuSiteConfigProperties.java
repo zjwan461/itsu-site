@@ -444,6 +444,16 @@ public class ItsuSiteConfigProperties {
 
         private boolean singleLogin = false;
 
+        private String singleLoginCheckTime = "5000";
+
+        public String getSingleLoginCheckTime() {
+            return singleLoginCheckTime;
+        }
+
+        public void setSingleLoginCheckTime(String singleLoginCheckTime) {
+            this.singleLoginCheckTime = singleLoginCheckTime;
+        }
+
         public boolean isSingleLogin() {
             return singleLogin;
         }

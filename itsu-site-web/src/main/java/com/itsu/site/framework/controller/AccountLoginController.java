@@ -49,7 +49,7 @@ public class AccountLoginController implements BaseController {
 //    @GetMapping("${itsu.site.security-config.logout-url}")
     @GetMapping("#{siteConfig.config.securityConfig.logoutRedirect}")
     public JsonResult logout(HttpServletRequest request, HttpServletResponse response) throws CodeAbleException {
-        return accountService.logout();
+        return accountService.logout(request, response);
     }
 
 }

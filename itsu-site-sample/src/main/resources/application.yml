@@ -51,7 +51,7 @@ itsu:
       logout-url: /logout
       logout-redirect: /
       cache-enable: false
-      single-login: true
+      single-login: false
     show-config-model: true
     show-ioc-beans: true
     show-mvc-mapping: true

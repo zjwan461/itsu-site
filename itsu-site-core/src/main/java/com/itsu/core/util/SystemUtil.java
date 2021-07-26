@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.event.LoginEvent;
+import com.itsu.core.component.event.LogoutEvent;
 import com.itsu.core.vo.io.req.ReqObjBase;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -270,6 +271,10 @@ public final class SystemUtil {
 
     public static void pushLoginEvent(LoginEvent loginEvent) {
         SpringUtil.getApplicationContext().publishEvent(loginEvent);
+    }
+
+    public static void pushLogoutEvent(LogoutEvent logoutEvent) {
+        SpringUtil.getApplicationContext().publishEvent(logoutEvent);
     }
 
     public static boolean isSingleLoginEnable() {

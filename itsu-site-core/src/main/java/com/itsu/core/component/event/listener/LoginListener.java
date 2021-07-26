@@ -19,7 +19,7 @@ import java.util.Set;
  * @author Jerry.Su
  * @Date 2021/7/23 11:20
  */
-public final class LoginListener implements ApplicationListener<LoginEvent>, InitializingBean {
+public class LoginListener implements ApplicationListener<LoginEvent>, InitializingBean {
 
     private static final Logger logger = LogUtil.getLogger(LoginListener.class);
 
@@ -34,19 +34,19 @@ public final class LoginListener implements ApplicationListener<LoginEvent>, Ini
         String username = (String) map.get("username");
         long timestamp = event.getTimestamp();
         logger.info("Account:{} login in System at {}", username, DateUtil.date(timestamp));
-        Set<String> oldTokens = (Set<String>) ac.get(username);
+        if (!SystemUtil.isSingleLoginEnable()) {
+            logger.debug("single login is not enabled, skip to kickOut account:{}", username);
+            return;
+        }
+        Set<String> oldTokens = (Set<String>) ac.get("Account:" + username);
         if (CollUtil.isNotEmpty(oldTokens)) {
             logger.info("Account:{} with token {} was already login in the system ...", username, oldTokens);
-            if (!SystemUtil.isSingleLoginEnable()) {
-                logger.debug("single login is not enabled, skip to kickOut account:{}", username);
-            } else {
-                kickOut(oldTokens);
-            }
+            kickOut(oldTokens);
         } else {
             logger.debug("account: {} was not login before, current login event is normally", username);
         }
         Set<String> tokens = (Set<String>) map.get("tokens");
-        ac.set(username, tokens);
+        ac.set("Account:" + username, tokens);
     }
 
     protected void kickOut(Set<String> tokens) {

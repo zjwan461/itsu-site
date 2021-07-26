@@ -14,6 +14,8 @@ import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.component.event.listener.LoginListener;
+import com.itsu.core.component.event.listener.LogoutListener;
+import com.itsu.core.component.event.schedue.ApplicationContextCleaner;
 import com.itsu.core.component.mvc.CrossOriginFilter;
 import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
@@ -47,6 +49,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -66,6 +69,7 @@ import java.util.Map;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableAsync
+@EnableScheduling
 @EnableConfigurationProperties(ItsuSiteConfigProperties.class)
 @Import({MybatisPlusConfiguration.class, RedisConfiguration.class, ShiroConfiguration.class, WebMvcConfiguration.class})
 public class ItsuSiteAutoConfiguration {
@@ -200,8 +204,21 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
-    public LoginListener myApplicationListener() {
+    @ConditionalOnMissingBean(LoginListener.class)
+    public LoginListener loginListener() {
         return new LoginListener();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "itsu.site.security-config.single-login", havingValue = "true")
+    public ApplicationContextCleaner applicationContextCleaner() {
+        return new ApplicationContextCleaner();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LogoutListener.class)
+    public LogoutListener logoutListener() {
+        return new LogoutListener();
     }
 
     @Bean

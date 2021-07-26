@@ -1,5 +1,7 @@
 package com.itsu.core.framework;
 
+import java.util.Collection;
+
 /**
  * @author Jerry.Su
  * @Date 2021/7/19 11:16
@@ -27,4 +29,8 @@ public interface ApplicationContext {
     void publishClean(String key, Object value);
 
     void cleanUp();
+
+    Collection<Object> list();
+
+    Collection<String> keys();
 }

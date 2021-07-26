@@ -2,10 +2,12 @@ package com.itsu.site.framework.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.api.AccountService;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.event.LoginEvent;
+import com.itsu.core.component.event.LogoutEvent;
 import com.itsu.core.entity.Account;
 import com.itsu.core.exception.CodeAbleException;
 import com.itsu.core.shiro.AesUsernamePasswordToken;
@@ -20,6 +22,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -85,7 +89,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public JsonResult logout() throws CodeAbleException {
+    public JsonResult logout(HttpServletRequest request, HttpServletResponse response) throws CodeAbleException {
+        String accesstoken = ServletUtil.getHeader(request, "accesstoken", "utf-8");
+        SystemUtil.pushLogoutEvent(new LogoutEvent(accesstoken));
         return JsonResult.ok();
     }
 

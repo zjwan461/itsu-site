@@ -10,13 +10,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.entity.Account;
+import com.itsu.core.framework.ApplicationContext;
 import com.itsu.core.util.JWTUtil;
+import com.itsu.core.util.SystemUtil;
 import com.itsu.core.util.TimeUtil;
 import com.itsu.site.framework.mapper.AccountMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
 
@@ -25,6 +28,9 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
 
     @Resource
     private ItsuSiteConfigProperties configProperties;
+
+    @Resource
+    private ApplicationContext ac;
 
     /**
      * 重新颁发token的实现
@@ -37,6 +43,11 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
         List<String> tokens = new ArrayList<>();
         for (int i = 0; i < configProperties.getAccessToken().getBackUpTokenNum(); i++) {
             tokens.add(JWTUtil.sign(username, account.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
+        }
+        if (SystemUtil.isSingleLoginEnable()) {
+            Set<String> oldTokens = (Set<String>) ac.get("Account:" + username);
+            oldTokens.addAll(tokens);
+            ac.set("Account:" + username, oldTokens);
         }
         return tokens;
     }

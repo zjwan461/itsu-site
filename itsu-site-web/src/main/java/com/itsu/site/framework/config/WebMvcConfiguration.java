@@ -42,6 +42,9 @@ public class WebMvcConfiguration implements InitializingBean {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 registry.addInterceptor(new RequestInterceptor(configProperties.getName())).addPathPatterns("/**");
+                if (configProperties.getSecurityConfig().isSingleLogin()) {
+                    registry.addInterceptor(new SingleLoginInterceptor()).addPathPatterns("/**");
+                }
             }
 
             // /**

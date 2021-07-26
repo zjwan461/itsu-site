@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -98,6 +99,16 @@ public class DefaultApplicationContext implements ApplicationContext {
     @Override
     public void cleanUp() {
         this.clean();
+    }
+
+    @Override
+    public Collection<Object> list() {
+        return applicationCache.values();
+    }
+
+    @Override
+    public  Collection<String> keys() {
+        return applicationCache.keySet();
     }
 
     public static ApplicationContext getInstance() {
