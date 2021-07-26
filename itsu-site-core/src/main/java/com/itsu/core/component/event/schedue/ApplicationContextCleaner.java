@@ -25,19 +25,31 @@ public class ApplicationContextCleaner {
 
     @Scheduled(fixedRateString = "#{siteConfig.config.securityConfig.singleLoginCheckTime}")
     public void clean() {
-        Set<String> kickOutList = (Set<String>) ac.get(LoginListener.KICK_OUT_ATTR);
+        Set<String> kickOutList = getKickOutList(LoginListener.KICK_OUT_ATTR);
         if (CollUtil.isNotEmpty(kickOutList)) {
             cleanTokens(kickOutList);
         }
 
-        Set<String> loginAccounts = ac.keys().stream().filter(key -> key.startsWith("Account")).collect(Collectors.toSet());
+        Set<String> loginAccounts = getLoginAccounts();
         for (String accountKey : loginAccounts) {
-            Set<String> accountTokens = (Set<String>) ac.get(accountKey);
+            Set<String> accountTokens = getKickOutList(accountKey);
             if (CollUtil.isNotEmpty(accountTokens)) {
                 cleanTokens(accountTokens);
             } else
-                ac.remove(accountKey);
+                removeAccount(accountKey);
         }
+    }
+
+    private void removeAccount(String accountKey) {
+        ac.remove(accountKey);
+    }
+
+    private Set<String> getLoginAccounts() {
+        return ac.keys().stream().filter(key -> key.startsWith("Account")).collect(Collectors.toSet());
+    }
+
+    private Set<String> getKickOutList(String kickOutAttr) {
+        return (Set<String>) ac.get(kickOutAttr);
     }
 
     protected void cleanTokens(Set<String> tokenList) {

@@ -3,15 +3,12 @@ package com.itsu.core.component.event.listener;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.itsu.core.component.event.LoginEvent;
-import com.itsu.core.framework.ApplicationContext;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
-import javax.annotation.Resource;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,14 +16,11 @@ import java.util.Set;
  * @author Jerry.Su
  * @Date 2021/7/23 11:20
  */
-public class LoginListener implements ApplicationListener<LoginEvent>, InitializingBean {
+public abstract class LoginListener implements ApplicationListener<LoginEvent>, InitializingBean {
 
     private static final Logger logger = LogUtil.getLogger(LoginListener.class);
 
     public static final String KICK_OUT_ATTR = "KICK_OUT_TOKEN_LIST";
-
-    @Resource
-    private ApplicationContext ac;
 
     @Override
     public void onApplicationEvent(LoginEvent event) {
@@ -38,7 +32,7 @@ public class LoginListener implements ApplicationListener<LoginEvent>, Initializ
             logger.debug("single login is not enabled, skip to kickOut account:{}", username);
             return;
         }
-        Set<String> oldTokens = (Set<String>) ac.get("Account:" + username);
+        Set<String> oldTokens = getOldTokens(username);
         if (CollUtil.isNotEmpty(oldTokens)) {
             logger.info("Account:{} with token {} was already login in the system ...", username, oldTokens);
             kickOut(oldTokens);
@@ -46,21 +40,13 @@ public class LoginListener implements ApplicationListener<LoginEvent>, Initializ
             logger.debug("account: {} was not login before, current login event is normally", username);
         }
         Set<String> tokens = (Set<String>) map.get("tokens");
-        ac.set("Account:" + username, tokens);
+        saveTokens(username, tokens);
     }
 
-    protected void kickOut(Set<String> tokens) {
-        Object obj = ac.get(KICK_OUT_ATTR);
-        if (obj instanceof Set) {
-            Set<String> kickOutList = (Set<String>) obj;
-            kickOutList.addAll(tokens);
-        } else
-            logger.error("kick out token list is not initial");
-    }
+    protected abstract void saveTokens(String username, Set<String> tokens);
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Set<String> kickOutList = new HashSet<>();
-        ac.set(KICK_OUT_ATTR, kickOutList);
-    }
+    protected abstract Set<String> getOldTokens(String username);
+
+    protected abstract void kickOut(Set<String> tokens);
+
 }

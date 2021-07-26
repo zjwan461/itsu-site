@@ -13,6 +13,8 @@ import com.itsu.core.component.TransferSiteConfigProperties;
 import com.itsu.core.component.cache.MapperCacheTransfer;
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
+import com.itsu.core.component.event.listener.DefaultLoginListener;
+import com.itsu.core.component.event.listener.DefaultLogoutListener;
 import com.itsu.core.component.event.listener.LoginListener;
 import com.itsu.core.component.event.listener.LogoutListener;
 import com.itsu.core.component.event.schedue.ApplicationContextCleaner;
@@ -206,7 +208,7 @@ public class ItsuSiteAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LoginListener.class)
     public LoginListener loginListener() {
-        return new LoginListener();
+        return new DefaultLoginListener();
     }
 
     @Bean
@@ -218,7 +220,7 @@ public class ItsuSiteAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutListener.class)
     public LogoutListener logoutListener() {
-        return new LogoutListener();
+        return new DefaultLogoutListener();
     }
 
     @Bean

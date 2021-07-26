@@ -280,4 +280,12 @@ public final class SystemUtil {
     public static boolean isSingleLoginEnable() {
         return getItsuSiteConfigProperties().getSecurityConfig().isSingleLogin();
     }
+
+    public static long getAccessTokenExpire() {
+        return TimeUtil.toMillis(getItsuSiteConfigProperties().getAccessToken().getExpire());
+    }
+
+    public static ItsuSiteConfigProperties.SecurityConfig.CacheType getSecurityCacheType() {
+        return getItsuSiteConfigProperties().getSecurityConfig().getCacheType();
+    }
 }

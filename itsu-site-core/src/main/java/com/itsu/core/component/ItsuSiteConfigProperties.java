@@ -442,6 +442,8 @@ public class ItsuSiteConfigProperties {
         // 单位是秒s
         private int cacheExpire = 60 * 60;
 
+        private CacheType cacheType = CacheType.MEMORY;
+
         private boolean singleLogin = false;
 
         private String singleLoginCheckTime = "5000";
@@ -462,7 +464,6 @@ public class ItsuSiteConfigProperties {
             this.singleLogin = singleLogin;
         }
 
-        private CacheType cacheType = CacheType.MEMORY;
 
         public String getLogoutRedirect() {
             return logoutRedirect;
