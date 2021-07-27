@@ -8,6 +8,7 @@ import com.itsu.core.context.ApplicationContext;
 import com.itsu.core.util.JWTUtil;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -58,9 +59,9 @@ public class ApplicationContextCleaner {
 
     private Set<String> getLoginAccounts() {
         if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.MEMORY) {
-            return ac.keys().stream().filter(key -> key.startsWith("Account:")).collect(Collectors.toSet());
+            return ac.keys().stream().filter(key -> key.startsWith(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX)).collect(Collectors.toSet());
         } else if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.REDIS) {
-            return redisTemplate.keys("Account:");
+            return redisTemplate.keys(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX);
         }
         return new HashSet<>();
     }

@@ -9,6 +9,7 @@ import com.itsu.core.exception.SingleLoginException;
 import com.itsu.core.context.ApplicationContext;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -31,7 +32,7 @@ public class SingleLoginInterceptor implements HandlerInterceptor {
             return true;
         }
         Set<String> kickOutList = getKickOutList();
-        if (CollUtil.contains(kickOutList, ServletUtil.getHeader(request, "accesstoken", "utf-8"))) {
+        if (CollUtil.contains(kickOutList, ServletUtil.getHeader(request, ItsuSiteConstant.ACCESS_TOKEN, ItsuSiteConstant.SYSTEM_ENCODING))) {
             LogUtil.info(SingleLoginInterceptor.class, "account login twice or more");
             throw new SingleLoginException();
         }
@@ -52,7 +53,7 @@ public class SingleLoginInterceptor implements HandlerInterceptor {
     }
 
     protected boolean isSkip(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String accesstoken = ServletUtil.getHeader(request, "accesstoken", "utf-8");
+        String accesstoken = ServletUtil.getHeader(request, ItsuSiteConstant.ACCESS_TOKEN, ItsuSiteConstant.SYSTEM_ENCODING);
         return !StringUtils.hasText(accesstoken);
     }
 

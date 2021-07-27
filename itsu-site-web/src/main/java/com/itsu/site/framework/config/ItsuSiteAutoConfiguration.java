@@ -248,7 +248,7 @@ public class ItsuSiteAutoConfiguration {
             public void execute(String classpath) throws IOException {
                 try {
                     File file = ClassPathResourceUtil.getFile(classpath);
-                    String content = FileUtil.readString(file, "UTF-8");
+                    String content = FileUtil.readString(file, ItsuSiteConstant.SYSTEM_ENCODING);
                     if (StrUtil.isBlank(content)) {
                         logger.warn("empty content for create.sql, will skip auto create/update table");
                     } else {

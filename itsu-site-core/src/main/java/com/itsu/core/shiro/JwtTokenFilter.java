@@ -12,6 +12,7 @@ import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.JWTUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.sys.CodeConstant;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.core.vo.sys.LoginObject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -60,7 +61,7 @@ public abstract class JwtTokenFilter extends AccessControlFilter {
             return true;
 
         boolean verify = false;
-        String accessToken = ServletUtil.getHeader(WebUtils.toHttp(request), "accessToken", "utf-8");
+        String accessToken = ServletUtil.getHeader(WebUtils.toHttp(request), ItsuSiteConstant.ACCESS_TOKEN, ItsuSiteConstant.SYSTEM_ENCODING);
         if (StringUtils.hasText(accessToken)) {
             String username = null;
             try {

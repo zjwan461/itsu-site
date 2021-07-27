@@ -2,6 +2,7 @@ package com.itsu.core.component;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -346,7 +347,7 @@ public class ItsuSiteConfigProperties {
 
         private boolean dynamic = false;
 
-        private String keyPrefix = "accesstoken:blacklist:";
+        private String keyPrefix = "accessToken:blacklist:";
 
         private RefreshTokenType type = RefreshTokenType.MEMORY;
 
@@ -1066,7 +1067,7 @@ public class ItsuSiteConfigProperties {
 
         private Integer maxAge = 3600;
 
-        private String[] allowHeaders = {"x-requested-with", "accesstoken"};
+        private String[] allowHeaders = {"x-requested-with", ItsuSiteConstant.ACCESS_TOKEN};
 
         public Integer getMaxAge() {
             return maxAge;

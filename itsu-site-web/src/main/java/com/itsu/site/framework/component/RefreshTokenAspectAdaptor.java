@@ -9,11 +9,12 @@ package com.itsu.site.framework.component;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
-import com.itsu.core.entity.Account;
 import com.itsu.core.context.ApplicationContext;
+import com.itsu.core.entity.Account;
 import com.itsu.core.util.JWTUtil;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.site.framework.mapper.AccountMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -54,13 +55,13 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
 
     protected void handleSingleLogin(String username, List<String> tokens) {
         if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.MEMORY) {
-            Set<String> oldTokens = (Set<String>) ac.get("Account:" + username);
+            Set<String> oldTokens = (Set<String>) ac.get(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
             oldTokens.addAll(tokens);
-            ac.set("Account:" + username, oldTokens);
+            ac.set(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username, oldTokens);
         } else if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.REDIS) {
-            Set<String> oldTokens = (Set<String>) redisTemplate.opsForValue().get("Account:" + username);
+            Set<String> oldTokens = (Set<String>) redisTemplate.opsForValue().get(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
             oldTokens.addAll(tokens);
-            redisTemplate.opsForValue().set("Account:" + username, oldTokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username, oldTokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
         } else {
             LogUtil.debug(RefreshTokenAspectAdaptor.class, "unsupported Security cache type:[" + SystemUtil.getSecurityCacheType() + "]");
         }

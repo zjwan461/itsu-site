@@ -17,6 +17,7 @@ import com.itsu.core.util.TimeUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.io.req.LoginReqVo;
 import com.itsu.core.vo.io.resp.LoginRespVo;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.site.framework.mapper.AccountMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -90,8 +91,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public JsonResult logout(HttpServletRequest request, HttpServletResponse response) throws CodeAbleException {
-        String accesstoken = ServletUtil.getHeader(request, "accesstoken", "utf-8");
-        SystemUtil.pushLogoutEvent(new LogoutEvent(accesstoken));
+        String accessToken = ServletUtil.getHeader(request, ItsuSiteConstant.ACCESS_TOKEN, ItsuSiteConstant.SYSTEM_ENCODING);
+        SystemUtil.pushLogoutEvent(new LogoutEvent(accessToken));
         return JsonResult.ok();
     }
 

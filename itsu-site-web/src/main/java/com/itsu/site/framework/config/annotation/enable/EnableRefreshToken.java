@@ -20,7 +20,7 @@ public @interface EnableRefreshToken {
 
     boolean dynamic() default false;
 
-    String keyPrefix() default "accesstoken:blacklist:";
+    String keyPrefix() default "accessToken:blacklist:";
 
     String expire() default "30m";
 

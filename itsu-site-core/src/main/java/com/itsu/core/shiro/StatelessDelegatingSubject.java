@@ -3,6 +3,7 @@ package com.itsu.core.shiro;
 import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.cache.ThreadCache;
 import com.itsu.core.util.JWTUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -32,14 +33,14 @@ public class StatelessDelegatingSubject extends WebDelegatingSubject {
         String username = ThreadCache.getString();
         if (!StringUtils.hasText(username)) {
             HttpServletRequest request = WebUtils.toHttp(this.getServletRequest());
-            String accesstoken = request.getHeader("accesstoken");
-            if (!StringUtils.hasText(accesstoken)) {
+            String accessToken = request.getHeader(ItsuSiteConstant.ACCESS_TOKEN);
+            if (!StringUtils.hasText(accessToken)) {
                 return null;
             }
             try {
-                username = JWTUtil.getUsername(accesstoken);
+                username = JWTUtil.getUsername(accessToken);
             } catch (IllegalArgumentException e) {
-                logger.info("cannot decode this jwt code:[" + accesstoken + "],which message is :[" + e.getMessage() + "]");
+                logger.info("cannot decode this jwt code:[" + accessToken + "],which message is :[" + e.getMessage() + "]");
             }
         }
         return new SimplePrincipalCollection(username, SpringUtil.getBean(AuthenRealmBase.class).getName());

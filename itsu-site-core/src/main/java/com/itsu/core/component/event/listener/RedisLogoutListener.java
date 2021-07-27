@@ -1,5 +1,6 @@
 package com.itsu.core.component.event.listener;
 
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
@@ -15,6 +16,6 @@ public class RedisLogoutListener extends LogoutListener {
 
     @Override
     protected void removeAccount(String username) {
-        redisTemplate.delete("Account:" + username);
+        redisTemplate.delete(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
     }
 }

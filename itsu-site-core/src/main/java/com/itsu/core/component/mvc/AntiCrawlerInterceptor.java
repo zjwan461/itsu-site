@@ -10,6 +10,7 @@ import com.itsu.core.component.ItsuSiteConfigProperties.*;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -36,13 +37,13 @@ public class AntiCrawlerInterceptor implements HandlerInterceptor {
             throws Exception {
         boolean result = true;
         if (CollUtil.isNotEmpty(antiCrawler.getIllegalUserAgents())) {
-            result = checkUserAgent(ServletUtil.getHeaderIgnoreCase(request, "User-Agent"));
+            result = checkUserAgent(ServletUtil.getHeaderIgnoreCase(request, ItsuSiteConstant.USER_AGENT));
         }
         if (result && StringUtils.hasText(antiCrawler.getReferer())) {
-            result = checkReferer(ServletUtil.getHeaderIgnoreCase(request, "Referer"));
+            result = checkReferer(ServletUtil.getHeaderIgnoreCase(request, ItsuSiteConstant.REFERER));
         }
         if (result && antiCrawler.getTsOffset() != null) {
-            result = checkTs(ServletUtil.getHeaderIgnoreCase(request, "ts"));
+            result = checkTs(ServletUtil.getHeaderIgnoreCase(request, ItsuSiteConstant.TS));
         }
         return result;
     }

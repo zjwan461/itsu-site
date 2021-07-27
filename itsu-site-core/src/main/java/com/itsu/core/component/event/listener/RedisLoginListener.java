@@ -2,6 +2,7 @@ package com.itsu.core.component.event.listener;
 
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -24,12 +25,12 @@ public class RedisLoginListener extends LoginListener {
 
     @Override
     protected void saveTokens(String username, Set<String> tokens) {
-        redisTemplate.opsForValue().set("Account:" + username, tokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username, tokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
     }
 
     @Override
     protected Set<String> getOldTokens(String username) {
-        return (Set<String>) redisTemplate.opsForValue().get("Account:" + username);
+        return (Set<String>) redisTemplate.opsForValue().get(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
     }
 
     @Override

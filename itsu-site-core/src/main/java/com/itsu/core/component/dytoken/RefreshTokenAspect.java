@@ -14,6 +14,7 @@ import com.itsu.core.util.JWTUtil;
 import com.itsu.core.util.RequestContextHolderUtil;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -73,7 +74,7 @@ public abstract class RefreshTokenAspect {
         RefreshToken[] rts = ms.getMethod().getAnnotationsByType(RefreshToken.class);
         RefreshToken refreshToken = (rts != null && rts.length > 0) ? rts[0] : null;
         HttpServletRequest request = RequestContextHolderUtil.getRequest();
-        String oldToken = ServletUtil.getHeader(request, "accesstoken", "UTF-8");
+        String oldToken = ServletUtil.getHeader(request, ItsuSiteConstant.ACCESS_TOKEN, ItsuSiteConstant.SYSTEM_ENCODING);
         boolean logioTag = !isLoginLogoutRequest(request);
 
         boolean refreshTokenFlag = true;

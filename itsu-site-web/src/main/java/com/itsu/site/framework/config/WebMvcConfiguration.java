@@ -50,18 +50,6 @@ public class WebMvcConfiguration implements InitializingBean {
                 }
             }
 
-            // /**
-            // * 添加跨域支持
-            // */
-            // @Override
-            // public void addCorsMappings(CorsRegistry registry) {
-            // registry.addMapping("/**")
-            // .allowedHeaders("access-control-allow-origin", "accesstoken", "Content-Type",
-            // "X-Requested-With")
-            // .allowCredentials(false).allowedMethods("*").allowedOrigins(kProperties.getAllowOrigins())
-            // .maxAge(3600);
-            // }
-
             /**
              * 添加自定义message converter，序列化json写日志处理
              */

@@ -2,6 +2,7 @@ package com.itsu.core.component.event.listener;
 
 import com.itsu.core.context.ApplicationContext;
 import com.itsu.core.util.LogUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
@@ -18,12 +19,12 @@ public class DefaultLoginListener extends LoginListener {
 
     @Override
     protected void saveTokens(String username, Set<String> tokens) {
-        ac.set("Account:" + username, tokens);
+        ac.set(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username, tokens);
     }
 
     @Override
     protected Set<String> getOldTokens(String username) {
-        return (Set<String>) ac.get("Account:" + username);
+        return (Set<String>) ac.get(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
     }
 
     @Override

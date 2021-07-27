@@ -18,4 +18,20 @@ public interface ItsuSiteConstant {
             " 888       888      oo     .d8P  `88.    .8'          oo     .d8P  888       888       888       o \n" +
             "o888o     o888o     8\"\"88888P'     `YbodP'            8\"\"88888P'  o888o     o888o     o888ooooood8 \n" +
             "                                                                            version: " + PLATFORM_VERSION + "\n";
+
+    String SINGLE_LOGIN_ACCOUNT_PREFIX = "Account:";
+
+    String USER_AGENT = "User-Agent";
+
+    String REFERER = "Referer";
+
+    String TS = "ts";
+
+    String MASK_CONTENT = "******";
+
+    String REQ_START_MILES = "ReqStartMiles";
+
+    String ACCESS_TOKEN = "accessToken";
+
+    String SYSTEM_ENCODING = "UTF-8";
 }

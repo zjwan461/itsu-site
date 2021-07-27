@@ -6,6 +6,7 @@
  */
 package com.itsu.core.component.mvc;
 
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -36,7 +37,7 @@ public class RequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String requestURI = request.getRequestURI();
-        request.setAttribute("ReqStartMiles", System.currentTimeMillis());
+        request.setAttribute(ItsuSiteConstant.REQ_START_MILES, System.currentTimeMillis());
         String query = request.getQueryString();
         if (StringUtils.hasText(query)) {
             log.info("----------{}-request: {} start with request query: {}", this.projectName, requestURI, query);
@@ -53,7 +54,7 @@ public class RequestInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
         String requestURI = request.getRequestURI();
-        Object obj = request.getAttribute("ReqStartMiles");
+        Object obj = request.getAttribute(ItsuSiteConstant.REQ_START_MILES);
         if (obj != null) {
             long startMiles = (long) obj;
             long currentMiles = System.currentTimeMillis();

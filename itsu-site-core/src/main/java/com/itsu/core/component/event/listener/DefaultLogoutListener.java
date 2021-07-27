@@ -1,6 +1,7 @@
 package com.itsu.core.component.event.listener;
 
 import com.itsu.core.context.ApplicationContext;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 
 import javax.annotation.Resource;
 
@@ -15,6 +16,6 @@ public class DefaultLogoutListener extends LogoutListener {
 
     @Override
     protected void removeAccount(String username) {
-        ac.remove("Account:" + username);
+        ac.remove(ItsuSiteConstant.SINGLE_LOGIN_ACCOUNT_PREFIX + username);
     }
 }
