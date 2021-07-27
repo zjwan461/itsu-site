@@ -10,6 +10,7 @@ import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.exception.CodeAbleException;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.io.req.ReqObjBase;
+import com.itsu.core.vo.sys.CodeConstant;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -55,10 +56,10 @@ public class GlobalRequestParamValidate {
             if (object instanceof String) {
                 String strObj = (String) object;
                 if (strObj.matches(regEx))
-                    throw new CodeAbleException(20002);
+                    throw new CodeAbleException(CodeConstant.REQUEST_PARAM_ERROR_CODE.getErrorCode());
             } else if (object instanceof ReqObjBase) {
                 if (SystemUtil.checkReqObj(regEx, object)) {
-                    throw new CodeAbleException(20002);
+                    throw new CodeAbleException(CodeConstant.REQUEST_PARAM_ERROR_CODE.getErrorCode());
                 }
             } else {
                 log.debug("do not need check param");

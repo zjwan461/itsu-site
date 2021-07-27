@@ -12,11 +12,15 @@ public enum CodeConstant {
     AUTHOR_ERROR_CODE(10003),
     BIND_ERROR_CODE(10004),
     AES_ERROR_CODE(10005),
-    SINGLE_LOGIN_ERROR_CODE(10006);
+    SINGLE_LOGIN_ERROR_CODE(10006),
+    TOKEN_REPEAT_ERROR_CODE(10007),
+    REQUEST_PARAM_ERROR_CODE(10008),
+    UPLOAD_MAX_ERROR_CODE(10009),
+    ;
 
-    private Integer errorCode;
+    private final Integer errorCode;
 
-    private CodeConstant(Integer errorCode) {
+    CodeConstant(Integer errorCode) {
         this.errorCode = errorCode;
     }
 

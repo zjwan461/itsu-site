@@ -121,7 +121,7 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
         String requestURI = request.getRequestURI();
         logger.info("found MaxUploadSizeExceededException to request for {}, which msg is {}", requestURI,
                 e.getMessage());
-        return JsonResult.error(20003, prop.getErrorMsg(20003));
+        return JsonResult.error(CodeConstant.UPLOAD_MAX_ERROR_CODE.getErrorCode(), prop.getErrorMsg(CodeConstant.UPLOAD_MAX_ERROR_CODE.getErrorCode()));
     }
 
     /**
@@ -252,6 +252,13 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
                 prop.getErrorMsg(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode()));
     }
 
+    /**
+     * 唯一登录异常处理
+     *
+     * @param request
+     * @param e
+     * @return
+     */
     @ExceptionHandler(value = SingleLoginException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public JsonResult handleSingleLoginException(HttpServletRequest request, SingleLoginException e) {

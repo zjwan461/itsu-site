@@ -7,6 +7,7 @@
 package com.itsu.core.exception;
 
 import com.itsu.core.util.ErrorPropertiesFactory;
+import com.itsu.core.vo.sys.CodeConstant;
 
 public class DynamicTokenException extends CodeAbleException {
 
@@ -17,14 +18,14 @@ public class DynamicTokenException extends CodeAbleException {
     private static final long serialVersionUID = 7778013024568579884L;
 
     public DynamicTokenException() {
-        super(20001, ErrorPropertiesFactory.getObject().getErrorMsg(20001));
+        super(CodeConstant.TOKEN_REPEAT_ERROR_CODE.getErrorCode(), ErrorPropertiesFactory.getObject().getErrorMsg(CodeConstant.TOKEN_REPEAT_ERROR_CODE.getErrorCode()));
     }
 
     /**
      * @param message
      */
     public DynamicTokenException(String message) {
-        super(20001, message);
+        super(CodeConstant.TOKEN_REPEAT_ERROR_CODE.getErrorCode(), message);
     }
 
 }
