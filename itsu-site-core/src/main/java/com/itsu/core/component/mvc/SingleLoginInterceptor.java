@@ -6,7 +6,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.event.listener.LoginListener;
 import com.itsu.core.exception.SingleLoginException;
-import com.itsu.core.framework.ApplicationContext;
+import com.itsu.core.context.ApplicationContext;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
 import org.springframework.data.redis.core.RedisTemplate;

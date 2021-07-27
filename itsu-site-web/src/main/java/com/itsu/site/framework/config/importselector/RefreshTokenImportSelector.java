@@ -2,8 +2,8 @@ package com.itsu.site.framework.config.importselector;
 
 import com.itsu.core.component.dytoken.LocalTokenBlackList;
 import com.itsu.core.exception.CodeAbleException;
-import com.itsu.core.framework.ApplicationContext;
-import com.itsu.core.framework.DefaultApplicationContext;
+import com.itsu.core.context.ApplicationContext;
+import com.itsu.core.context.DefaultApplicationContext;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import com.itsu.site.framework.config.annotation.enable.EnableRefreshToken;
 import org.springframework.context.annotation.ImportSelector;

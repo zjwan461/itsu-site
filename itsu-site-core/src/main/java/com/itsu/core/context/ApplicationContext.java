@@ -1,4 +1,4 @@
-package com.itsu.core.framework;
+package com.itsu.core.context;
 
 import java.util.Collection;
 

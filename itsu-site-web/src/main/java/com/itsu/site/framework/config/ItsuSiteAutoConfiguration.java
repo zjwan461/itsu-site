@@ -20,8 +20,8 @@ import com.itsu.core.component.mvc.ExceptionThrowFilter;
 import com.itsu.core.component.mvc.SpringMvcHelper;
 import com.itsu.core.component.validate.GlobalRequestParamValidate;
 import com.itsu.core.exception.InitialException;
-import com.itsu.core.framework.ApplicationContext;
-import com.itsu.core.framework.DefaultApplicationContext;
+import com.itsu.core.context.ApplicationContext;
+import com.itsu.core.context.DefaultApplicationContext;
 import com.itsu.core.util.ClassPathResourceUtil;
 import com.itsu.core.util.ErrorPropertiesFactory;
 import com.itsu.core.util.SystemUtil;
@@ -218,7 +218,8 @@ public class ItsuSiteAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperties(keys = {"itsu.site.security-config.single-login", "itsu.site.security-config.cache-type"}, values = {"true", "memory"}, matchIfMissing = true)
+//    @ConditionalOnProperties(keys = {"itsu.site.security-config.single-login", "itsu.site.security-config.cache-type"}, values = {"true", "memory"}, matchIfMissing = true)
+    @ConditionalOnProperty(name = "itsu.site.security-config.single-login", havingValue = "true", matchIfMissing = true)
     public ApplicationContextCleaner applicationContextCleaner() {
         return new ApplicationContextCleaner();
     }

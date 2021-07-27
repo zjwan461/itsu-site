@@ -1,4 +1,4 @@
-package com.itsu.core.framework;
+package com.itsu.core.context;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class DefaultApplicationContext implements ApplicationContext {
     @Override
     public synchronized Object get(String key) {
         if (key == null || key.length() == 0) {
-            logger.debug("current key is null or empty, will not set to applicationContext");
+            logger.debug("current key is null or empty, will not find in applicationContext");
             return null;
         } else {
             Object value = applicationCache.get(key);
@@ -60,7 +60,7 @@ public class DefaultApplicationContext implements ApplicationContext {
     @Override
     public synchronized Object remove(String key) {
         if (key == null || key.length() == 0) {
-            logger.debug("current key is null or empty, will not set to applicationContext");
+            logger.debug("current key is null or empty, will not do remove action");
             return null;
         } else {
             Object value = applicationCache.remove(key);

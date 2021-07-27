@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.itsu.core.component.ItsuSiteConfigProperties;
 import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.entity.Account;
-import com.itsu.core.framework.ApplicationContext;
+import com.itsu.core.context.ApplicationContext;
 import com.itsu.core.util.JWTUtil;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
