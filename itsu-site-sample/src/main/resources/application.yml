@@ -51,7 +51,7 @@ itsu:
       logout-url: /logout
       logout-redirect: /
       cache-enable: false
-      single-login: false
+      single-login: true
       cache-type: redis
       cache-expire: 3600
     show-config-model: true

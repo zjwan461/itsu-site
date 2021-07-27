@@ -288,4 +288,8 @@ public final class SystemUtil {
     public static ItsuSiteConfigProperties.SecurityConfig.CacheType getSecurityCacheType() {
         return getItsuSiteConfigProperties().getSecurityConfig().getCacheType();
     }
+
+    public static Integer getBackUpTokenNum() {
+        return getItsuSiteConfigProperties().getAccessToken().getBackUpTokenNum();
+    }
 }

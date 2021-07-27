@@ -10,6 +10,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.itsu.core.component.dytoken.RefreshToken;
 import com.itsu.core.exception.CodeAbleException;
 import com.itsu.core.exception.DynamicTokenException;
+import com.itsu.core.exception.SingleLoginException;
 import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.sys.CodeConstant;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ApiExceptionHandler implements ApiExceptionHandlerBase {
 
-    private static Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
     @Resource
     private ErrorProperties prop;
@@ -249,5 +250,14 @@ public class ApiExceptionHandler implements ApiExceptionHandlerBase {
         logger.info("found request JWT verifi exception request for {}, which msg is {} ", requestURI, e.getMessage());
         return JsonResult.error(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode(),
                 prop.getErrorMsg(CodeConstant.AUTHEN_ERROR_CODE.getErrorCode()));
+    }
+
+    @ExceptionHandler(value = SingleLoginException.class)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public JsonResult handleSingleLoginException(HttpServletRequest request, SingleLoginException e) {
+        String requestURI = request.getRequestURI();
+        logger.info("found api bad request for {}, which msg is {}", requestURI, e.getMessage());
+        return JsonResult.error(CodeConstant.SINGLE_LOGIN_ERROR_CODE.getErrorCode(),
+                prop.getErrorMsg(CodeConstant.SINGLE_LOGIN_ERROR_CODE.getErrorCode()));
     }
 }

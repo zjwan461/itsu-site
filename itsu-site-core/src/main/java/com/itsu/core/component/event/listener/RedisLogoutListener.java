@@ -10,7 +10,7 @@ import javax.annotation.Resource;
  */
 public class RedisLogoutListener extends LogoutListener {
 
-    @Resource
+    @Resource(name = "redisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jerry.Su
@@ -23,7 +24,7 @@ public class RedisLoginListener extends LoginListener {
 
     @Override
     protected void saveTokens(String username, Set<String> tokens) {
-        redisTemplate.opsForValue().set("Account:" + username, tokens, SystemUtil.getAccessTokenExpire());
+        redisTemplate.opsForValue().set("Account:" + username, tokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -37,6 +38,7 @@ public class RedisLoginListener extends LoginListener {
         if (obj instanceof Set) {
             Set<String> kickOutList = (Set<String>) obj;
             kickOutList.addAll(tokens);
+            redisTemplate.opsForValue().set(KICK_OUT_ATTR, kickOutList);
         } else
             LogUtil.error(DefaultLoginListener.class, "kick out token list is not initial");
     }

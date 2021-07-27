@@ -12,14 +12,16 @@ import com.itsu.core.component.dytoken.RefreshTokenAspect;
 import com.itsu.core.entity.Account;
 import com.itsu.core.framework.ApplicationContext;
 import com.itsu.core.util.JWTUtil;
+import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
-import com.itsu.core.util.TimeUtil;
 import com.itsu.site.framework.mapper.AccountMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
 
@@ -27,10 +29,10 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
     private AccountMapper accountMapper;
 
     @Resource
-    private ItsuSiteConfigProperties configProperties;
-
-    @Resource
     private ApplicationContext ac;
+
+    @Resource(name = "jsonRedisTemplate")
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 重新颁发token的实现
@@ -41,15 +43,27 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
         condition.eq("username", username).last("limit 1");
         Account account = accountMapper.selectOne(condition);
         List<String> tokens = new ArrayList<>();
-        for (int i = 0; i < configProperties.getAccessToken().getBackUpTokenNum(); i++) {
-            tokens.add(JWTUtil.sign(username, account.getPassword(), TimeUtil.toMillis(configProperties.getAccessToken().getExpire())));
+        for (int i = 0; i < SystemUtil.getBackUpTokenNum(); i++) {
+            tokens.add(JWTUtil.sign(username, account.getPassword(), SystemUtil.getAccessTokenExpire()));
         }
         if (SystemUtil.isSingleLoginEnable()) {
+            handleSingleLogin(username, tokens);
+        }
+        return tokens;
+    }
+
+    protected void handleSingleLogin(String username, List<String> tokens) {
+        if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.MEMORY) {
             Set<String> oldTokens = (Set<String>) ac.get("Account:" + username);
             oldTokens.addAll(tokens);
             ac.set("Account:" + username, oldTokens);
+        } else if (SystemUtil.getSecurityCacheType() == ItsuSiteConfigProperties.SecurityConfig.CacheType.REDIS) {
+            Set<String> oldTokens = (Set<String>) redisTemplate.opsForValue().get("Account:" + username);
+            oldTokens.addAll(tokens);
+            redisTemplate.opsForValue().set("Account:" + username, oldTokens, SystemUtil.getAccessTokenExpire(), TimeUnit.MILLISECONDS);
+        } else {
+            LogUtil.debug(RefreshTokenAspectAdaptor.class, "unsupported Security cache type:[" + SystemUtil.getSecurityCacheType() + "]");
         }
-        return tokens;
     }
 
 }

@@ -11,7 +11,8 @@ public enum CodeConstant {
     AUTHEN_ERROR_CODE(10002),
     AUTHOR_ERROR_CODE(10003),
     BIND_ERROR_CODE(10004),
-    AES_ERROR_CODE(10005);
+    AES_ERROR_CODE(10005),
+    SINGLE_LOGIN_ERROR_CODE(10006);
 
     private Integer errorCode;
 

@@ -78,7 +78,7 @@ public abstract class JwtTokenFilter extends AccessControlFilter {
                         // 将用户名存入线程变量中
                         ThreadCache.saveString(username);
                     } catch (Exception e) {
-                        log.info("bad accessToken for {} ", WebUtils.toHttp(request).getRequestURI());
+                        log.info("bad accessToken for {}, detail message:{} ", WebUtils.toHttp(request).getRequestURI(), e.getMessage());
                     }
                 } else
                     log.info("can not find the account {} ", username);
