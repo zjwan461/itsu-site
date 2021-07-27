@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class MaskJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
     private static final Logger log = LoggerFactory.getLogger(MaskJackson2HttpMessageConverter.class);

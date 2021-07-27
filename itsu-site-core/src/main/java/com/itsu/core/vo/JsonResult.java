@@ -3,7 +3,6 @@ package com.itsu.core.vo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.itsu.core.component.mvc.MaskField;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,8 +23,6 @@ public class JsonResult<T> implements Serializable {
     private Integer code;
     private String msg;
     private T data;
-    //	private String refreshToken;
-    @MaskField
     private List<String> refreshTokens;
 
     public JsonResult(Integer code, String msg, T data) {
@@ -96,20 +93,6 @@ public class JsonResult<T> implements Serializable {
         this.data = data;
         return this;
     }
-
-//	/**
-//	 * @return the refreshToken
-//	 */
-//	public String getRefreshToken() {
-//		return refreshToken;
-//	}
-//
-//	/**
-//	 * @param refreshToken the refreshToken to set
-//	 */
-//	public void setRefreshToken(String refreshToken) {
-//		this.refreshToken = refreshToken;
-//	}
 
     public List<String> getRefreshTokens() {
         return refreshTokens;

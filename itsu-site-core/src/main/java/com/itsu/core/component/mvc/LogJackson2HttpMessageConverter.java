@@ -2,6 +2,7 @@ package com.itsu.core.component.mvc;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itsu.core.util.SystemUtil;
 import com.itsu.core.vo.JsonResult;
 import com.itsu.core.vo.io.req.ReqObjBase;
 import org.slf4j.Logger;
@@ -38,7 +39,11 @@ public class LogJackson2HttpMessageConverter extends MappingJackson2HttpMessageC
         if (!(object instanceof JsonResult))
             log.warn("return data type is not instanceof {}, which is {}", JsonResult.class.getName(), object.getClass().getName());
         ObjectMapper objectMapper = SpringUtil.getBean(ObjectMapper.class);
-        log.info("write response body data: {}", objectMapper.writeValueAsString(object));
+        String jsonStr = objectMapper.writeValueAsString(object);
+        log.info("write response body data: {}", jsonStr);
+        if (SystemUtil.isMaskResp()) {
+            object = objectMapper.readValue(jsonStr, Object.class);
+        }
         super.writeInternal(object, type, outputMessage);
     }
 }

@@ -52,6 +52,8 @@ itsu:
       logout-redirect: /
       cache-enable: false
       single-login: false
+      cache-type: redis
+      cache-expire: 3600
     show-config-model: true
     show-ioc-beans: true
     show-mvc-mapping: true
@@ -62,18 +64,19 @@ itsu:
       init-data: true
     mask:
       log: true
+      resp: true
     api-exception-handler:
       enable: true
     global-param-check:
       enable: true
     access-token:
-      dynamic: false
+      dynamic: true
       back-up-token-num: 1
       expire: 30m
-      type: MEMORY
-#    mapper-cache:
-#      cache-type: MEMORY
-#      cache-time: 30
+      type: REDIS
+    mapper-cache:
+      cache-type: REDIS
+      cache-time: 30
 #itsu:
 #  site:
 #    auto-create-db-table:
