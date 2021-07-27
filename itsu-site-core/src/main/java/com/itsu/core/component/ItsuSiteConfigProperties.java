@@ -1,5 +1,6 @@
 package com.itsu.core.component;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.itsu.core.vo.sys.RefreshTokenType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -648,11 +649,11 @@ public class ItsuSiteConfigProperties {
     public static class AntiCrawler {
         private boolean enable = false;
 
-        private List<String> illegalUserAgents;
+        private List<String> illegalUserAgents = CollUtil.newArrayList("Postman", "insomnia", "Apache", "HttpClient", "WindowsPowerShell", "curl", "okhttp", "python", "urllib", "spider");
 
-        private String referer;
+        private String referer = "http://localhost";
 
-        private Integer tsOffset;
+        private Integer tsOffset = 300000;
 
         /**
          * @return the enable

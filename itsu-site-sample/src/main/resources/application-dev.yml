@@ -1,9 +1,7 @@
 #debug: true
-server:
-  port: 8700
 spring:
   redis:
-    host: 192.168.22.122
+    host: localhost
     port: 6379
     database: 3
     timeout: 3000
@@ -14,7 +12,7 @@ spring:
         max-idle: 20
         min-idle: 0
   datasource:
-    url: jdbc:mysql://192.168.22.122:3306/itsu-site?useSSL=false&characterEncoding=utf8&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/itsu-site?useSSL=false&characterEncoding=utf8&useUnicode=true&allowMultiQueries=true&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: password

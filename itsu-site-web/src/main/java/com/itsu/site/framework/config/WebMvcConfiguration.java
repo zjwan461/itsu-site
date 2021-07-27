@@ -45,6 +45,9 @@ public class WebMvcConfiguration implements InitializingBean {
                 if (configProperties.getSecurityConfig().isSingleLogin()) {
                     registry.addInterceptor(new SingleLoginInterceptor()).addPathPatterns("/**");
                 }
+                if (configProperties.getAntiCrawler().isEnable()) {
+                    registry.addInterceptor(new AntiCrawlerInterceptor(configProperties.getAntiCrawler())).addPathPatterns("/**");
+                }
             }
 
             // /**

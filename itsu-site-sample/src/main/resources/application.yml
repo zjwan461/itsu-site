@@ -1,3 +1,4 @@
+
 spring:
   servlet:
     multipart:
@@ -38,6 +39,7 @@ server:
     encoding:
       charset: UTF-8
       force: true
+  port: 8700
 mybatis-plus:
   mapper-locations:
     - classpath:mappers/*.xml
@@ -50,7 +52,7 @@ itsu:
       login-url: /login
       logout-url: /logout
       logout-redirect: /
-      cache-enable: false
+      cache-enable: true
       single-login: true
       cache-type: redis
       cache-expire: 3600
@@ -77,6 +79,21 @@ itsu:
     mapper-cache:
       cache-type: REDIS
       cache-time: 30
+    anti-crawler:
+      enable: false
+      ts-offset: 300000
+      illegal-user-agents:
+        - Postman
+        - insomnia
+        - Apache
+        - HttpClient
+        - WindowsPowerShell
+        - curl
+        - okhttp
+        - python
+        - urllib
+        - spider
+      referer: http://localhost:${server.port}${server.servlet.context-path}
 #itsu:
 #  site:
 #    auto-create-db-table:
