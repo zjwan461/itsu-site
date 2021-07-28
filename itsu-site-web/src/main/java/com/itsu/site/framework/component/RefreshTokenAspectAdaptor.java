@@ -41,7 +41,7 @@ public class RefreshTokenAspectAdaptor extends RefreshTokenAspect {
     @Override
     protected List<String> newSign(String username) {
         QueryWrapper<Account> condition = new QueryWrapper<>();
-        condition.eq("username", username).last("limit 1");
+        condition.eq(ItsuSiteConstant.USER_NAME, username).last(ItsuSiteConstant.LIMIT_ONE);
         Account account = accountMapper.selectOne(condition);
         List<String> tokens = new ArrayList<>();
         for (int i = 0; i < SystemUtil.getBackUpTokenNum(); i++) {

@@ -65,14 +65,14 @@ public class AccountServiceImpl implements AccountService {
 
     protected void pushLoginEvent(String username, Set<String> tokens) {
         Map<String, Object> map = new HashMap<>();
-        map.put("username", username);
+        map.put(ItsuSiteConstant.USER_NAME, username);
         map.put("tokens", tokens);
         SystemUtil.pushLoginEvent(new LoginEvent(map));
     }
 
     protected LoginRespVo getLoginRespVo(UsernamePasswordToken token) {
         QueryWrapper<Account> condition = new QueryWrapper<>();
-        condition.eq("username", token.getUsername());
+        condition.eq(ItsuSiteConstant.USER_NAME, token.getUsername());
         Account user = accountMapper.selectOne(condition);
         user.setLastLoginTime(DateUtil.now());
         accountMapper.updateById(user);

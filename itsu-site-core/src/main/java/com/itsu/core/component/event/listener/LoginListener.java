@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.itsu.core.component.event.LoginEvent;
 import com.itsu.core.util.LogUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
@@ -25,7 +26,7 @@ public abstract class LoginListener implements ApplicationListener<LoginEvent>, 
     @Override
     public void onApplicationEvent(LoginEvent event) {
         Map<String, Object> map = (Map<String, Object>) event.getSource();
-        String username = (String) map.get("username");
+        String username = (String) map.get(ItsuSiteConstant.USER_NAME);
         long timestamp = event.getTimestamp();
         logger.info("Account:{} login in System at {}", username, DateUtil.date(timestamp));
         if (!SystemUtil.isSingleLoginEnable()) {

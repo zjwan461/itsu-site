@@ -34,4 +34,8 @@ public interface ItsuSiteConstant {
     String ACCESS_TOKEN = "accessToken";
 
     String SYSTEM_ENCODING = "UTF-8";
+
+    String LIMIT_ONE = "limit 1";
+
+    String USER_NAME = "username";
 }

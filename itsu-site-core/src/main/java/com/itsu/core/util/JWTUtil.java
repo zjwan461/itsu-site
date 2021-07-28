@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -36,7 +37,7 @@ public class JWTUtil {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(secret)) {
 			throw new IllegalArgumentException("username or secret is null or empty");
 		}
-		return JWT.create().withClaim("username", username)
+		return JWT.create().withClaim(ItsuSiteConstant.USER_NAME, username)
 				.withClaim("current" + RandomUtil.randomString(2), System.currentTimeMillis())
 				.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRE_TIME)).sign(Algorithm.HMAC256(secret));
 	}
@@ -53,7 +54,7 @@ public class JWTUtil {
 		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(secret)) {
 			throw new IllegalArgumentException("username or secret is null or empty");
 		}
-		return JWT.create().withClaim("username", username)
+		return JWT.create().withClaim(ItsuSiteConstant.USER_NAME, username)
 				.withClaim("current" + RandomUtil.randomString(2), System.currentTimeMillis())
 				.withExpiresAt(new Date(System.currentTimeMillis() + expireTime)).sign(Algorithm.HMAC256(secret));
 	}
@@ -107,6 +108,6 @@ public class JWTUtil {
 	 * @throws IllegalArgumentException
 	 */
 	public static String getUsername(final String token) throws IllegalArgumentException {
-		return decode(token).getClaim("username").asString();
+		return decode(token).getClaim(ItsuSiteConstant.USER_NAME).asString();
 	}
 }

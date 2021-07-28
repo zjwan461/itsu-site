@@ -6,6 +6,7 @@ import com.itsu.core.shiro.AesUsernamePasswordToken;
 import com.itsu.core.shiro.AuthenRealmBase;
 import com.itsu.core.util.ByteSourceUtil;
 import com.itsu.core.util.SystemUtil;
+import com.itsu.core.vo.sys.ItsuSiteConstant;
 import com.itsu.site.framework.mapper.AccountMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -68,7 +69,7 @@ public class AuthenRealm extends AuthenRealmBase {
 	@Override
 	protected Account getUserInfoByUserName(String username) {
 		QueryWrapper<Account> condition = new QueryWrapper<>();
-		condition.eq("username", username);
+		condition.eq(ItsuSiteConstant.USER_NAME, username);
 		return accountMapper.selectOne(condition);
 	}
 
